@@ -1,0 +1,45 @@
+<div>
+  {{#each fields as |field|}}
+    {{#if field.values}}
+          <table>
+            <tbody>
+            <tr class="rs-page__field">
+              <td style="width: 20%; max-width: 20%">
+                      <span>
+                        <semantic-context repository='assets'>
+                          <semantic-link iri="{{field.id}}">
+                            {{field.label.value}}
+                          </semantic-link>
+                        </semantic-context>
+                      </span>
+              </td>
+              <td class="rsbv-value-cell">
+                {{#ifCond (objectLength field.values) '>' 1}}
+                  <ul>
+                    {{#each field.values as |value|}}
+                    	{{#if binding.order.value}}
+                        <div style="display:flex">
+                          <b style="margin-right:5px">{{binding.order.value}}.</b>
+                            {{> rsp:FieldValueVisualization field=field value=value }}
+                        </div>
+                      {{else}}
+                        <li class="rs-page__field-value">
+                          {{> rsp:FieldValueVisualization field=field value=value }}
+                        </li>
+                    	{{/if}}
+                    {{/each}}
+                  </ul>
+                {{/ifCond}}
+                {{#ifCond (objectLength field.values) '===' 1}}
+                  {{#each field.values as |value|}}
+                    <span class="rs-page__field-value">{{> rsp:FieldValueVisualization field=field value=value }}</span>
+                  {{/each}}
+                {{/ifCond}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+    {{/if}}
+  {{/each}}
+
+</div>

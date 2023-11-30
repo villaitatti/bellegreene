@@ -1,0 +1,532 @@
+@prefix crmdig: <http://www.ics.forth.gr/isl/CRMdig/> .
+@prefix crminfluence: <http://www.cidoc-crm.org/cidoc-crm/influence/> .
+@prefix crmsci: <http://www.ics.forth.gr/isl/CRMsci/> .
+@prefix Help: <http://help.researchspace.org/resource/> .
+@prefix bds: <http://www.bigdata.com/rdf/search#> .
+@prefix crmba: <http://www.cidoc-crm.org/cidoc-crm/CRMba/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix User: <http://www.researchspace.org/resource/user/> .
+@prefix custom: <https://belle-greene.com/resource/custom/> .
+@prefix forms: <http://www.researchspace.org/resource/system/forms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rshelp: <http://researchspace.org/help/> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix Platform: <http://www.researchspace.org/resource/system/> .
+@prefix Templateontology: <Template:http://www.researchspace.org/ontology/> .
+@prefix crmgeo: <http://www.ics.forth.gr/isl/CRMgeo/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rso: <http://www.researchspace.org/ontology/> .
+@prefix Admin: <http://www.researchspace.org/resource/admin/> .
+@prefix ontodia: <http://ontodia.org/schema/v1#> .
+@prefix frbroo: <http://iflastandards.info/ns/fr/frbr/frbroo/> .
+@prefix crmarchaeo: <http://www.cidoc-crm.org/cidoc-crm/CRMarchaeo/> .
+@prefix rsp: <http://www.researchspace.org/resource/> .
+
+<http://www.researchspace.org/resource/system/fieldDefinitionContainer/context> {
+  Platform:fieldDefinitionContainer a <http://www.w3.org/ns/ldp#Resource>, prov:Entity,
+      <http://www.w3.org/ns/ldp#Container>;
+    rdfs:label "Field Definition Container";
+    prov:wasAttributedTo User:admin;
+    prov:generatedAtTime "2023-10-26T09:13:00.266Z"^^xsd:dateTime;
+    rdfs:comment "Container to store field definitions." .
+  
+  _:node1hdll548ux56 <http://www.w3.org/ns/ldp#contains> Platform:fieldDefinitionContainer .
+}
+
+<http://www.researchspace.org/fieldDefinition/Title/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://www.researchspace.org/fieldDefinition/Title> .
+  
+  <http://www.researchspace.org/fieldDefinition/Title> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T09:34:12.539Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28507;
+    <http://www.researchspace.org/resource/system/fields/order> "1000";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28508;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Title"@en .
+  
+  _:t28507 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28508 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject rdfs:label ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Date/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Date> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Date> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T09:40:17.380Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28517;
+    <http://www.researchspace.org/resource/system/fields/order> "1001";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28518;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Date" .
+  
+  _:t28518 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P94i_was_created_by ?creation.
+  ?creation crm:P4_has_time-span ?timespan.
+  ?timespan crm:P82_at_some_time_within ?value.
+}""" .
+  
+  _:t28517 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Sender/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Sender> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Sender> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T09:41:55.773Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28526;
+    <http://www.researchspace.org/resource/system/fields/order> "1002";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28525;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Sender" .
+  
+  _:t28525 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P19i_was_made_for ?activity.
+  ?activity crm:P14_carried_out_by ?sender.
+  ?sender rdfs:label ?value.
+}""" .
+  
+  _:t28526 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Recipient/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Recipient> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Recipient> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T09:42:53.066Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28535;
+    <http://www.researchspace.org/resource/system/fields/order> "1003";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28536;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Recipient" .
+  
+  _:t28535 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28536 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P19i_was_made_for ?activity.
+  ?activity crm:P11_has_participant ?recipient.
+  ?recipient rdfs:label ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Place_letter_was_written/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Place_letter_was_written> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Place_letter_was_written>
+    a <http://www.w3.org/ns/ldp#Resource>, prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:25:00.081Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28544;
+    <http://www.researchspace.org/resource/system/fields/order> "1004";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28545;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "City letter was written" .
+  
+  _:t28545 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P94i_was_created_by ?creation.
+  ?creation crm:P7_took_place_at ?place.
+  ?place crm:P2_has_type <https://belle-greene.com/resource/city/type>.
+  ?place rdfs:label ?value.
+}""" .
+  
+  _:t28544 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Country_letter_was_written/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Country_letter_was_written> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Country_letter_was_written>
+    a <http://www.w3.org/ns/ldp#Resource>, prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:28:59.184Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28553;
+    <http://www.researchspace.org/resource/system/fields/order> "1005";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28552;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Country letter was written" .
+  
+  _:t28553 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28552 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P94i_was_created_by ?creation.
+  ?creation crm:P7_took_place_at ?place.
+  ?place crm:P2_has_type <https://belle-greene.com/resource/country/type>.
+  ?place rdfs:label ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Letterhead/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Letterhead> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Letterhead> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:30:20.628Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28560;
+    <http://www.researchspace.org/resource/system/fields/order> "1006";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28561;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Letterhead" .
+  
+  _:t28561 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P165_incorporates ?linguistic_object.
+  ?linguistic_object crm:P190_has_symbolic_content ?value.
+}""" .
+  
+  _:t28560 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Number_of_Pages/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Number_of_Pages> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Number_of_Pages> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:32:38.469Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28571;
+    <http://www.researchspace.org/resource/system/fields/order> "1006";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28572;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Number of Pages" .
+  
+  _:t28572 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P43_has_dimension ?dimension.
+  ?dimension crm:P90_has_value ?value.
+}""" .
+  
+  _:t28571 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Notes/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Notes> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Notes> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:33:58.633Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28578;
+    <http://www.researchspace.org/resource/system/fields/order> "1007";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28579;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Notes" .
+  
+  _:t28579 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P67i_is_referred_to_by ?information.
+  ?information crm:P2_has_type <https://belle-greene.com/resource/information_object/Notes/type>.
+  ?information crm:P190_has_symbolic_content ?value.
+}""" .
+  
+  _:t28578 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Accompanying_Material/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Accompanying_Material> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Accompanying_Material>
+    a <http://www.w3.org/ns/ldp#Resource>, prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:34:39.403Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28587;
+    <http://www.researchspace.org/resource/system/fields/order> "1008";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28586;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Accompanying Material" .
+  
+  _:t28587 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28586 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P67i_is_referred_to_by ?information.
+  ?information crm:P2_has_type <https://belle-greene.com/resource/information_object/accompanying_material/Type>.
+  ?information crm:P190_has_symbolic_content ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Transcribers/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Transcribers> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Transcribers> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:35:59.179Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28594;
+    <http://www.researchspace.org/resource/system/fields/order> "1009";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28595;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Transcribers" .
+  
+  _:t28594 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28595 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P108i_was_produced_by ?production.
+  ?production crm:P14_carried_out_by ?transcriber.
+  ?transcriber rdfs:label ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/People_mentioned/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/People_mentioned> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/People_mentioned> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:37:02.537Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28603;
+    <http://www.researchspace.org/resource/system/fields/order> "1010";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28602;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "People mentioned" .
+  
+  _:t28602 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P67_refers_to ?person.
+  ?person rdfs:label ?value.
+}""" .
+  
+  _:t28603 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Letter_contents/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Letter_contents> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Letter_contents> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:39:13.275Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28611;
+    <http://www.researchspace.org/resource/system/fields/order> "1011";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28610;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Letter contents" .
+  
+  _:t28611 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28610 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P67i_is_referred_to_by ?linguistic.
+  ?linguistic crm:P2_has_type <https://belle-greene.com/resource/type/letter_contents>.
+  ?linguistic crm:P190_has_symbolic_content ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Subjects/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Subjects> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Subjects> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:41:12.712Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28618;
+    <http://www.researchspace.org/resource/system/fields/order> "1012";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28619;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Subjects" .
+  
+  _:t28619 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P129_is_about ?subject_type.
+  ?subject_type rdfs:label ?value.
+}""" .
+  
+  _:t28618 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Letter_Number/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Letter_Number> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Letter_Number> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:51:08.424Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28641;
+    <http://www.researchspace.org/resource/system/fields/order> "101";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28642;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Letter Number" .
+  
+  _:t28642 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P1_is_identified_by ?identifier.
+  ?identifier crm:P2_has_type <https://belle-greene.com/resource/information_object/letter_id/Type>.
+  ?identifier rdfs:label ?value.
+}""" .
+  
+  _:t28641 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Box_Number/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Box_Number> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Box_Number> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:49:02.144Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28632;
+    <http://www.researchspace.org/resource/system/fields/order> "102";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28633;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Box Number" .
+  
+  _:t28633 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P1_is_identified_by ?identifier.
+  ?identifier crm:P2_has_type <https://belle-greene.com/resource/identifier/box_number>.
+  ?identifier rdfs:label ?value.
+}""" .
+  
+  _:t28632 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/Folder_Number/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/Folder_Number> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/Folder_Number> a <http://www.w3.org/ns/ldp#Resource>,
+      prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:49:24.179Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28639;
+    <http://www.researchspace.org/resource/system/fields/order> "103";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28640;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "Folder Number" .
+  
+  _:t28639 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+  
+  _:t28640 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P1_is_identified_by ?identifier.
+  ?identifier crm:P2_has_type <https://belle-greene.com/resource/identifier/folder_number>.
+  ?identifier rdfs:label ?value.
+}""" .
+}
+
+<http://localhost:10214/container/fieldDefinitionContainer/I_Tatti_Letter_Number/context> {
+  Platform:fieldDefinitionContainer <http://www.w3.org/ns/ldp#contains> <http://localhost:10214/container/fieldDefinitionContainer/I_Tatti_Letter_Number> .
+  
+  <http://localhost:10214/container/fieldDefinitionContainer/I_Tatti_Letter_Number>
+    a <http://www.w3.org/ns/ldp#Resource>, prov:Entity, <http://www.researchspace.org/resource/system/fields/Field>;
+    prov:generatedAtTime "2023-10-26T10:52:38.815Z"^^xsd:dateTime;
+    prov:wasAttributedTo User:admin;
+    <http://www.researchspace.org/resource/system/fields/domain> custom:Letter;
+    <http://www.researchspace.org/resource/system/fields/insertPattern> _:t28649;
+    <http://www.researchspace.org/resource/system/fields/order> "104";
+    <http://www.researchspace.org/resource/system/fields/selectPattern> _:t28648;
+    <http://www.researchspace.org/resource/system/fields/xsdDatatype> xsd:string;
+    rdfs:label "I Tatti Letter Number" .
+  
+  _:t28648 a sp:Query;
+    sp:text """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+SELECT ?value WHERE {
+  $subject a <https://belle-greene.com/resource/custom/Letter>.
+  $subject crm:P67i_is_referred_to_by ?information.
+  ?information crm:P2_has_type <https://belle-greene.com/resource/information_object/i_tatti_letter_number/Type>.
+  ?information rdfs:label ?value.
+}""" .
+  
+  _:t28649 a sp:Query;
+    sp:text "INSERT { $subject ?predicate $value} WHERE {}" .
+}

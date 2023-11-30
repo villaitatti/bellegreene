@@ -1,0 +1,82 @@
+.page-hero {
+  background-color: rgba(255,255,255,0.78);
+  background-image: url(https://bellegreene.francescocipriani.com/wp-content/uploads/2023/02/White-head-back_Princeton.jpg);
+  background-size: cover;
+  background-image: linear-gradient(0deg, rgba(255,255,255,0.78),rgba(255,255,255,0.78)), url(https://bellegreene.francescocipriani.com/wp-content/uploads/2023/02/White-head-back_Princeton.jpg);
+  background-position: center top;
+  background-repeat: no-repeat;
+  padding-right: 400px;
+  min-height: 100vh;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-box: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+
+.gb-grid-wrapper-84ae3696 > .gb-grid-column {
+  padding-top: 100px;
+  padding-left: 40px;
+  padding-bottom: 40px;
+  max-width: 600px;
+}
+
+.grid-container{
+  max-width: 960px !important;
+}
+.page-hero .inside-page-hero {
+  max-width: calc(960px - 400px - 0px);
+  margin-left: 100px;
+}
+.page-hero .inside-page-hero {
+  width: 100%;
+}
+.container.grid-container {
+  width: auto;
+}
+.site-content .content-area {
+  width: 100%;
+}
+.gb-image {
+  width: 460px;
+  height: auto; 
+}
+a{
+  text-decoration: underline;
+}
+.gb-grid-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 0Wpx; 
+}
+.gb-grid-column-81f2efda,.gb-container-81f2efda{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gb-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a.gb-button-4441b547 {
+  background-color: var(--contrast);
+  color: #ffffff;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  border: none; 
+  border-radius: 4px; 
+}
+
+
+h4{
+  text-transform: none;
+}

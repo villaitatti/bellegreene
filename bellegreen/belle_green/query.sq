@@ -1,0 +1,17 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?value ?label WHERE { 
+  optional{
+    ?value rdf:type crm:E21_Person. 
+    ?value crm:P1_is_identified_by ?person. 
+    ?person rdfs:label ?label. 
+    FILTER REGEX(STR(?label), "BelleGreene") 
+  }
+  optional{
+	SERVICE <http://www.researchspace.org/resource/system/service/custom#wikidata> {
+		?results wikidata:hasTitles "Mary Berenson";
+		wikidata:hasId ?id
+	}
+  }
+} LIMIT 10

@@ -1,0 +1,611 @@
+@prefix gmi:   <http://www.isotc211.org/2005/gmi> .
+@prefix bg:    <https://belle-greene.com/resource/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix gsr:   <http://www.isotc211.org/2005/gsr> .
+@prefix gml:   <http://www.opengis.net/gml/3.2> .
+@prefix xsd:   <https://www.w3.org/2001/XMLSchema#> .
+@prefix slim:  <http://www.loc.gov/MARC21/slim> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix fr:    <https://belle-greene.com/resource/fr/> .
+@prefix crmdig: <http://www.ics.forth.gr/isl/CRMext/CRMdig.rdfs/> .
+@prefix xsi:   <http://www.fao.org/geonetwork> .
+@prefix xsl:   <https://www.w3.org/TR/2017/REC-xslt-30-20170608/> .
+@prefix gco:   <http://www.isotc211.org/2005/gco> .
+@prefix crmsci: <http://www.cidoc-crm.org/cidoc-crm/CRMsci/> .
+@prefix gmx:   <http://www.isotc211.org/2005/gmx> .
+@prefix marinetlo: <http://www.ics.forth.gr/isl/ontology/MarineTLO/> .
+@prefix xml:   <http://www.w3.org/XML/1998/namespace> .
+@prefix crmgeo: <http://www.ics.forth.gr/isl/CRMgeo/> .
+@prefix crm:   <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix custom: <https://belle-greene.com/resource/custom/> .
+@prefix gts:   <http://www.isotc211.org/2005/gts> .
+@prefix geonet: <http://www.fao.org/geonetwork> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix marc:  <http://www.loc.gov/MARC21/slim> .
+@prefix srv:   <http://www.isotc211.org/2005/srv> .
+@prefix crmpc: <https://cidoc-crm.org/sites/default/files/CRMpc_v1.2.rdfs/> .
+@prefix crmpe: <http://parthenos.d4science.org/CRMext/CRMpe.rdfs/> .
+@prefix fc:    <https://belle-greene.com/resource/fc/> .
+@prefix gmd:   <http://www.isotc211.org/2005/gmd> .
+@prefix xlink: <http://www.w3.org/1999/xlink> .
+
+<https://belle-greene.com/resource/scope/45>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "ancient art from Greece and Rome" .
+
+<https://belle-greene.com/resource/subject/30>
+        a                           crm:E55_Type ;
+        rdfs:label                  "decorative arts" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/30> .
+
+<https://belle-greene.com/resource/scope/17>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "references to museums, libraries, and galleries" .
+
+<https://belle-greene.com/resource/scope/58>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/43>
+        a                           crm:E55_Type ;
+        rdfs:label                  "modern art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/43> .
+
+<https://belle-greene.com/resource/subject/15>
+        a                           crm:E55_Type ;
+        rdfs:label                  "drama" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/15> .
+
+<https://belle-greene.com/resource/scope/3>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/56>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's travel" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/56> .
+
+<https://belle-greene.com/resource/subject/28>
+        a                           crm:E55_Type ;
+        rdfs:label                  "sculpture" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/28> .
+
+<https://belle-greene.com/resource/scope/11>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/52>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/6>
+        a                           crm:E55_Type ;
+        rdfs:label                  "French literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/6> .
+
+<https://belle-greene.com/resource/scope/24>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/65>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/50>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's social world" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/50> .
+
+<https://belle-greene.com/resource/scope/37>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/22>
+        a                           crm:E55_Type ;
+        rdfs:label                  "German art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/22> .
+
+<https://belle-greene.com/resource/subject/63>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's leisure activites" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/63> .
+
+<https://belle-greene.com/resource/subject/35>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Chinese art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/35> .
+
+<https://belle-greene.com/resource/subject/48>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's art collection" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/48> .
+
+<https://belle-greene.com/resource/scope/31>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "includes arts of North, Central, and South America, excluding modern art" .
+
+<https://belle-greene.com/resource/scope/8>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/44>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/16>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/57>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/42>
+        a                           crm:E55_Type ;
+        rdfs:label                  "images of BG" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/42> .
+
+<https://belle-greene.com/resource/scope/29>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/14>
+        a                           crm:E55_Type ;
+        rdfs:label                  "fiction" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/14> .
+
+<https://belle-greene.com/resource/scope/2>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "poetry, fiction, drama, references to writers, quotations from literary texts" .
+
+<https://belle-greene.com/resource/subject/55>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's fashion" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/55> .
+
+<https://belle-greene.com/resource/subject/27>
+        a                           crm:E55_Type ;
+        rdfs:label                  "paintings" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/27> .
+
+<https://belle-greene.com/resource/scope/10>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/51>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "art dealers, art business" .
+
+<https://belle-greene.com/resource/subject/5>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Canadian literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/5> .
+
+<https://belle-greene.com/resource/scope/23>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/64>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "BG's physical and mental health" .
+
+<https://belle-greene.com/resource/scope/36>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/21>
+        a                           crm:E55_Type ;
+        rdfs:label                  "French art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/21> .
+
+<https://belle-greene.com/resource/subject/62>
+        a                           crm:E55_Type ;
+        rdfs:label                  "finance" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/62> .
+
+<https://belle-greene.com/resource/scope/49>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/34>
+        a                           crm:E55_Type ;
+        rdfs:label                  "acquisitions" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/34> .
+
+<https://belle-greene.com/resource/subject/47>
+        a                           crm:E55_Type ;
+        rdfs:label                  "politics" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/47> .
+
+<https://belle-greene.com/resource/dataset/subjects_art>
+        a                  crm:E31_Document ;
+        crm:P129_is_about  <https://belle-greene.com/resource/subject/52> , <https://belle-greene.com/resource/subject/37> , <https://belle-greene.com/resource/subject/33> , <https://belle-greene.com/resource/subject/43> , <https://belle-greene.com/resource/subject/14> , <https://belle-greene.com/resource/subject/10> , <https://belle-greene.com/resource/subject/9> , <https://belle-greene.com/resource/subject/13> , <https://belle-greene.com/resource/subject/4> , <https://belle-greene.com/resource/subject/8> , <https://belle-greene.com/resource/subject/63> , <https://belle-greene.com/resource/subject/28> , <https://belle-greene.com/resource/subject/38> , <https://belle-greene.com/resource/subject/59> , <https://belle-greene.com/resource/subject/19> , <https://belle-greene.com/resource/subject/29> , <https://belle-greene.com/resource/subject/48> , <https://belle-greene.com/resource/subject/50> , <https://belle-greene.com/resource/subject/44> , <https://belle-greene.com/resource/subject/54> , <https://belle-greene.com/resource/subject/5> , <https://belle-greene.com/resource/subject/35> , <https://belle-greene.com/resource/subject/45> , <https://belle-greene.com/resource/subject/53> , <https://belle-greene.com/resource/subject/24> , <https://belle-greene.com/resource/subject/20> , <https://belle-greene.com/resource/subject/30> , <https://belle-greene.com/resource/subject/15> , <https://belle-greene.com/resource/subject/25> , <https://belle-greene.com/resource/subject/11> , <https://belle-greene.com/resource/subject/21> , <https://belle-greene.com/resource/subject/40> , <https://belle-greene.com/resource/subject/61> , <https://belle-greene.com/resource/subject/39> , <https://belle-greene.com/resource/subject/49> , <https://belle-greene.com/resource/subject/46> , <https://belle-greene.com/resource/subject/16> , <https://belle-greene.com/resource/subject/56> , <https://belle-greene.com/resource/subject/60> , <https://belle-greene.com/resource/subject/64> , <https://belle-greene.com/resource/subject/47> , <https://belle-greene.com/resource/subject/55> , <https://belle-greene.com/resource/subject/65> , <https://belle-greene.com/resource/subject/6> , <https://belle-greene.com/resource/subject/26> , <https://belle-greene.com/resource/subject/36> , <https://belle-greene.com/resource/subject/22> , <https://belle-greene.com/resource/subject/32> , <https://belle-greene.com/resource/subject/51> , <https://belle-greene.com/resource/subject/23> , <https://belle-greene.com/resource/subject/31> , <https://belle-greene.com/resource/subject/41> , <https://belle-greene.com/resource/subject/12> , <https://belle-greene.com/resource/subject/3> , <https://belle-greene.com/resource/subject/7> , <https://belle-greene.com/resource/subject/2> , <https://belle-greene.com/resource/subject/18> , <https://belle-greene.com/resource/subject/58> , <https://belle-greene.com/resource/subject/62> , <https://belle-greene.com/resource/subject/57> , <https://belle-greene.com/resource/subject/17> , <https://belle-greene.com/resource/subject/27> , <https://belle-greene.com/resource/subject/34> , <https://belle-greene.com/resource/subject/42> .
+
+<https://belle-greene.com/resource/subject/19>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Italian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/19> .
+
+<https://belle-greene.com/resource/scope/30>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/7>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/43>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "modern art from anywhere on the globe" .
+
+<https://belle-greene.com/resource/scope/15>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/56>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "specifically for travel outside of the NY-metropolitan area" .
+
+<https://belle-greene.com/resource/subject/41>
+        a                           crm:E55_Type ;
+        rdfs:label                  "early printed books" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/41> .
+
+<https://belle-greene.com/resource/scope/28>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/13>
+        a                           crm:E55_Type ;
+        rdfs:label                  "poetry" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/13> .
+
+<https://belle-greene.com/resource/subject/54>
+        a                           crm:E55_Type ;
+        rdfs:label                  "scholarship" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/54> .
+
+<https://belle-greene.com/resource/subject/26>
+        a                           crm:E55_Type ;
+        rdfs:label                  "South American art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/26> .
+
+<https://belle-greene.com/resource/subject/39>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Byzantine art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/39> .
+
+<https://belle-greene.com/resource/scope/50>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/4>
+        a                           crm:E55_Type ;
+        rdfs:label                  "American literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/4> .
+
+<https://belle-greene.com/resource/scope/22>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/63>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "golf or motoring, e.g." .
+
+<https://belle-greene.com/resource/scope/35>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/20>
+        a                           crm:E55_Type ;
+        rdfs:label                  "British art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/20> .
+
+<https://belle-greene.com/resource/subject/61>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Indian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/61> .
+
+<https://belle-greene.com/resource/scope/48>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/33>
+        a                           crm:E55_Type ;
+        rdfs:label                  "library work" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/33> .
+
+<https://belle-greene.com/resource/subject/46>
+        a                           crm:E55_Type ;
+        rdfs:label                  "private collections" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/46> .
+
+<https://belle-greene.com/resource/subject/18>
+        a                           crm:E55_Type ;
+        rdfs:label                  "European art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/18> .
+
+<https://belle-greene.com/resource/scope/6>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/59>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Mesopotamian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/59> .
+
+<https://belle-greene.com/resource/scope/42>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "including photographs, drawings, paintings, etc." .
+
+<https://belle-greene.com/resource/scope/14>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/55>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/40>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Medieval and Renaissance manuscripts" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/40> .
+
+<https://belle-greene.com/resource/subject/9>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Arabic literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/9> .
+
+<https://belle-greene.com/resource/scope/27>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/12>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Belgian literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/12> .
+
+<https://belle-greene.com/resource/subject/53>
+        a                           crm:E55_Type ;
+        rdfs:label                  "current events" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/53> .
+
+<https://belle-greene.com/resource/subject/25>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Spanish art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/25> .
+
+<https://belle-greene.com/resource/subject/38>
+        a                           crm:E55_Type ;
+        rdfs:label                  "South Asian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/38> .
+
+<https://belle-greene.com/resource/subject/3>
+        a                           crm:E55_Type ;
+        rdfs:label                  "British literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/3> .
+
+<https://belle-greene.com/resource/scope/21>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/62>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "stock market, BG's personal finances" .
+
+<https://belle-greene.com/resource/scope/34>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "specific references to BG, JPM, and/or JPMII acquiring materials for the Morgan's collection" .
+
+<https://belle-greene.com/resource/subject/60>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Japanese art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/60> .
+
+<https://belle-greene.com/resource/scope/47>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "political opinions and philosophies" .
+
+<https://belle-greene.com/resource/subject/32>
+        a                           crm:E55_Type ;
+        rdfs:label                  "music" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/32> .
+
+<https://belle-greene.com/resource/scope/19>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/45>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Greco-Roman art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/45> .
+
+<https://belle-greene.com/resource/subject/17>
+        a                           crm:E55_Type ;
+        rdfs:label                  "cultural institutions" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/17> .
+
+<https://belle-greene.com/resource/scope/5>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/58>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Swedish literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/58> .
+
+<https://belle-greene.com/resource/scope/41>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/13>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/54>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "scholarly activity, research, lectures, symposia, conferences, and publications" .
+
+<https://belle-greene.com/resource/subject/8>
+        a                           crm:E55_Type ;
+        rdfs:label                  "German literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/8> .
+
+<https://belle-greene.com/resource/scope/26>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/11>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Greek literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/11> .
+
+<https://belle-greene.com/resource/subject/52>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's family" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/52> .
+
+<https://belle-greene.com/resource/scope/39>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/24>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Flemish art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/24> .
+
+<https://belle-greene.com/resource/subject/65>
+        a                           crm:E55_Type ;
+        rdfs:label                  "American architecture" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/65> .
+
+<https://belle-greene.com/resource/subject/37>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Islamic art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/37> .
+
+<https://belle-greene.com/resource/subject/2>
+        a                           crm:E55_Type ;
+        rdfs:label                  "literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/2> .
+
+<https://belle-greene.com/resource/scope/20>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/61>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/33>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "specific references to BG creating inventories and catalogues, providing research assistance, implementing institutional policies, etc. at the Morgan" .
+
+<https://belle-greene.com/resource/scope/46>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/31>
+        a                           crm:E55_Type ;
+        rdfs:label                  "American art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/31> .
+
+<https://belle-greene.com/resource/scope/18>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "includes arts of Western and Eastern Europe and the British Isles, excluding modern art" .
+
+<https://belle-greene.com/resource/scope/59>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/44>
+        a                           crm:E55_Type ;
+        rdfs:label                  "language learning" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/44> .
+
+<https://belle-greene.com/resource/subject/16>
+        a                           crm:E55_Type ;
+        rdfs:label                  "essays" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/16> .
+
+<https://belle-greene.com/resource/scope/4>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/57>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Babylonian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/57> .
+
+<https://belle-greene.com/resource/subject/29>
+        a                           crm:E55_Type ;
+        rdfs:label                  "drawings" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/29> .
+
+<https://belle-greene.com/resource/scope/40>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/12>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/53>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/7>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Italian literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/7> .
+
+<https://belle-greene.com/resource/scope/25>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/10>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Indian literature" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/10> .
+
+<https://belle-greene.com/resource/subject/51>
+        a                           crm:E55_Type ;
+        rdfs:label                  "art dealing" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/51> .
+
+<https://belle-greene.com/resource/scope/38>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/subject/23>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Dutch art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/23> .
+
+<https://belle-greene.com/resource/subject/64>
+        a                           crm:E55_Type ;
+        rdfs:label                  "BG's health" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/64> .
+
+<https://belle-greene.com/resource/subject/36>
+        a                           crm:E55_Type ;
+        rdfs:label                  "Persian art" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/36> .
+
+<https://belle-greene.com/resource/subject/49>
+        a                           crm:E55_Type ;
+        rdfs:label                  "race and ethnicity" ;
+        crm:P67i_is_reffered_to_by  <https://belle-greene.com/resource/scope/49> .
+
+<https://belle-greene.com/resource/scope/60>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .
+
+<https://belle-greene.com/resource/scope/32>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "including opera" .
+
+<https://belle-greene.com/resource/scope/9>
+        a           crm:E73_Information_Object ;
+        rdfs:label  "0" .

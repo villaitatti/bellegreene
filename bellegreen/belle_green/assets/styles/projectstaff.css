@@ -1,0 +1,44 @@
+
+.content-area {
+  max-width: 800px; 
+  margin: 0 auto;
+
+}
+
+.page{
+  margin-top:0 ;
+}
+
+.gb-container-782d4c66 p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3a393a;
+  margin-top: 20px;
+}
+em{
+  text-transform: none;
+}
+
+.one-container .site-content {
+  padding: 30px 0px !important;
+}
+
+.gb-container-67d1d032 p,
+.gb-container-a9e6349d p,
+.gb-container-782d4c66 p {
+  font-size: 16px; 
+  font-weight: normal; 
+  color: #3a393a;
+  margin: 10px auto; 
+}
+
+.gb-container-67d1d032,.gb-container-a9e6349d,.gb-container-dc6c3a3f,.gb-container-782d4c66 {
+  margin-left: 65px;
+} 
+.gb-container-a9e6349d p, .gb-container-782d4c66 p {
+  font-size: 16px;
+  font-weight: normal;
+  color: #3a393a;
+  margin: 10px auto;
+}
+

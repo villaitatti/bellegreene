@@ -1,0 +1,46 @@
+.entry-content:not(:first-child), .entry-summary:not(:first-child), .page-content:not(:first-child) {
+  margin-top: 2em;
+}
+
+.gb-container-f6ff4964 > .gb-inside-container {
+  margin-top: 50px;
+  padding-right: 130px;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.entry-title {
+  margin-bottom: 0;
+}
+
+.gb-headline-text{
+  line-height: 1.2;
+  color: #3a393a;
+  font-family: Montserrat,sans-serif;
+  font-size: 1.3em;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  
+}
+
+a {
+  text-decoration: underline;
+}
+
+.gb-container p {
+  font-size: 15.3px;
+}
+
+.gb-container{
+  padding-right: 130px;
+  padding-left: 130px;
+}
+
+.entry-title{
+  white-space: nowrap;
+  padding-top:60px;
+  font-size:54px;
+  line-height: 1.1em;
+  font-weight: 700;
+  margin-bottom: 0;
+}

@@ -1,0 +1,190 @@
+.page-hero {
+  background-image: url(/assets/images/letters/image001.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-align: center;
+  min-height: 100vh;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-box: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.no-sidebar .entry-content .alignfull {
+  margin-left: calc(-100vw / 2 + 100% / 2);
+  margin-right: calc(-100vw / 2 + 100% / 2);
+  max-width: 100vw;
+  width: auto;
+}
+.gb-container-e4d5fd40 {
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.page-hero .inside-page-hero{
+  max-width: 960px !important
+}
+.page-hero .inside-page-hero {
+  width: 100%;
+}
+.gb-grid-wrapper-0f1bd015 {
+  margin-left: -20px;
+}
+.gb-grid-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+.gb-grid-wrapper-0f1bd015 > .gb-grid-column {
+  padding-left: 50px;
+  padding-bottom: 20px;
+}
+.gb-grid-wrapper > .gb-grid-column-e94175fd {
+  width: 25%;
+}
+.gb-grid-column {
+  box-sizing: border-box;
+}
+.gb-grid-wrapper > .gb-grid-column-e94175fd > .gb-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.gb-container-e94175fd {
+  margin-top: 60px;
+}
+.gb-button-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  clear: both;
+}
+.gb-button-wrapper-3e5475dc {
+  justify-content: flex-start;
+}
+.gb-button-wrapper-5e1c30fa {
+  margin-top: 20px;
+}
+.gb-button-wrapper-733cd5ae {
+  margin-top: 20px;
+}
+.gb-button-wrapper-0e4ab154 {
+  margin-top: 20px;
+}
+
+.gb-grid-wrapper > .gb-grid-column-325379de {
+  width: 75%;
+}
+.gb-grid-wrapper > .gb-grid-column-325379de > .gb-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.gb-container-325379de {
+  margin-top: 60px;
+}
+.gb-grid-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+/* Apply to the container that holds the table */
+.semantic-table-holder{
+  width: 100%;
+}
+
+
+.gb-grid-wrapper-7ec514a2 > .gb-grid-column {
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+.gb-button{
+  padding-left: 20px;
+}
+
+
+.table>thead>tr>th {
+  border-bottom: 2px solid #3A393A;
+  padding: 12px 8px;
+  color: #ED6B5C;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.table>thead>tr>td{
+  border-bottom: 2px solid #3A393A;
+  padding: 12px 8px;
+  color: #ED6B5C;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+
+
+
+.table {
+  table-layout: fixed;
+  width: 1080px; 
+  max-width: 100%; 
+  border-collapse: collapse;
+}
+
+
+
+tr>td>span {
+  color: #333; 
+}
+
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 600px) {
+  .table {
+    font-size: 14px; /* Decrease font size for smaller screens */
+  }
+}
+.gb-container-a6d19adb > .gb-inside-container {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  max-width: 960px;
+  margin:auto
+
+}
+
+
+.letter-list {
+  width: 75%;
+  float: right;
+}
+.letter-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.letter-list li {
+  margin-bottom: 10px;
+}
+
+.pagination {
+  margin: 20px 0;
+}
+
+.pagination a {
+  display: inline-block;
+  margin-right: 10px;
+  text-decoration: none;
+  color: blue;
+}
+
+/* Add margin to the list items to create spacing */
+li {
+  margin-bottom: 10px; /* Adjust the value as needed */
+}
+
+h1{
+  text-align: center;
+}

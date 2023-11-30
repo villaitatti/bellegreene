@@ -1,0 +1,23 @@
+<div data-flex-layout='row' style="justify-content: center; align-items: center; display: flex; padding-top: 20vh">
+    <div class='rs-page__summary' style='width:60%;'>
+        <div class='rs-entity-fields'>
+            <div class="workInfoContainer">
+                <div data-flex-layout="row center-left">
+                    <h1>Letter</h1>
+                </div>
+                <div class="rs-page__summary-content table-responsive">
+                    <mp-field-visualization
+                            subject='[[this]]'
+                            fields='[[fieldDefinitionsFromQuery "SELECT ?field WHERE { ?field <http://www.researchspace.org/resource/system/fields/domain> custom:Letter. ?field <http://www.researchspace.org/resource/system/fields/order> ?order} ORDER BY ASC(?order) ?field"]]'
+                            template='{{> rsp:FieldBasedVisualization subject="[[this]]" [[#if asserted]]guess="true"[[/if]]}}'
+                    ></mp-field-visualization>
+                    <div style="margin-top:18px;margin-left:20px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

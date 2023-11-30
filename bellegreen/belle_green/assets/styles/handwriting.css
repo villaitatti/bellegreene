@@ -1,0 +1,46 @@
+.page-hero {
+  background-image: url(/assets/images/handwriting/handwriting_background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.gb-image {
+  max-width: 70%;
+  height: auto;
+}
+
+.gb-grid-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+}
+
+.gb-grid-column {
+  padding: 10px;
+  text-align: start;
+}
+
+.entry-content {
+  margin: 0;
+  padding: 20px;
+  text-align: right; 
+}
+
+.gb-grid-column p {
+  margin: 0;
+  margin-left: 20px;
+}
+
+.gb-grid-wrapper-cb8539a1 > .gb-grid-column {
+  padding-left: 40px;
+  padding-bottom: 40px;
+}
+
+.container.grid-container{
+  width:80%;
+}

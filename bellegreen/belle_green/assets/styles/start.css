@@ -1,0 +1,17 @@
+h1 {
+    font-size: 54px;
+    line-height: 1.1em;
+}
+.inside-page-hero > *:last-child {
+    margin-bottom: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: #3A393A;
+    font-family: 54px Montserrat, sans-serif;
+}
+.gb-headline-f5222193{
+    color: #F4EFE4;
+}
