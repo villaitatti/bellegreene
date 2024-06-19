@@ -5,6 +5,8 @@ import shutil
 import re
 import pandas as pd
 import datetime
+import configparser
+import urllib
 from rdflib import Graph, URIRef, namespace, Namespace, Literal
 
 REGEX_PAGE = r'\[p\.\s(\d+)\]'
@@ -12,6 +14,10 @@ REGEX_SEQUENCE = r'^\d+_\d{3}$'
 
 KEY_PARAGRAPHS = 'paragraphs'
 KEY_SEQUENCE = 'sequence'
+
+KEY_USERNAME = 'username'
+KEY_PASSWORD = 'password'
+KEY_ENDPOINT = 'endpoint'
 
 BASE_URI = 'https://belle-greene.com/'
 RESOURCE = f'{BASE_URI}resource/'
@@ -117,17 +123,15 @@ def _restore(path):
         shutil.rmtree(path)
     os.mkdir(path)
 
-
 def _create_graph_letter(letter_number, sequences, img_path, output_path):
 
-    if not os.path.exists(output_path):
-        os.mkdir(output_path)
+    if not os.path.exists(os.path.join(output_path, 'ttl')):
+        os.mkdir(os.path.join(output_path, 'ttl'))
             
     for page, sequence in sequences.items():
         _create_graph(sequence, page, letter_number, img_path)
         g = _create_graph(sequence, page, letter_number, img_path)
-        g.serialize(os.path.join(output_path, f'{letter_number}_{page}.ttl'), format='turtle')
-
+        g.serialize(os.path.join(output_path, 'ttl', f'{letter_number}_{page}.ttl'), format='turtle')
 
 def _create_graph(para, page_number, letter_number, img_path):
     g = Graph()
@@ -148,7 +152,7 @@ def _create_graph(para, page_number, letter_number, img_path):
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.fileContext, URIRef(
             'http://www.researchspace.org/resource/TextDocuments')))
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.fileName, Literal(
-            f'Letter {letter_number}_{page_number}.html', datatype=XSD.string)))
+            f'{letter_number}_{page_number}.html', datatype=XSD.string)))
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.mediaType,
             Literal('form-data', datatype=XSD.string)))
         g.add((PAGE_NODE_DOCUMENT, PROV.generatedAtTime, Literal(
@@ -182,13 +186,39 @@ def _create_graph(para, page_number, letter_number, img_path):
 
     return g
 
+def _get_credentials(type):
+    """
+    Retrieves the credentials for a specific type from a configuration file.
+
+    Parameters:
+    type (str): The type of credentials to retrieve.
+
+    Returns:
+    dict: A dictionary containing the username, password, and endpoint for the specified type.
+    """
+    config = configparser.ConfigParser()
+    try:
+        path = os.path.join(os.path.abspath(os.getcwd()), 'upload', 'psw.ini')
+        config.read(path)
+
+        return {
+        KEY_USERNAME: config.get(type, KEY_USERNAME),
+        KEY_PASSWORD: config.get(type, KEY_PASSWORD),
+        KEY_ENDPOINT: config.get(type, KEY_ENDPOINT)
+        }
+    
+    except Exception as ex:
+        print('Error. Have you created the psw.ini file? see readme.md')
+        print(str(ex))
+
 @click.command()
 @click.option('-u', 'exec_upload', is_flag=True, help="Execute the upload", default=False)
 @click.option('-P', 'prune', is_flag=True, help="Prune output folder", default=False)
-@click.option('-direct', 'direct_path', type=click.Path())
-@click.option('-l', 'limit', type=int, default=-1)
-@click.option('-I', 'img_path', type=str, default='https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/')
-def exec(exec_upload, prune, direct_path, limit, img_path):
+@click.option('-direct', 'direct_path', help="Only for development purposes", type=click.Path())
+@click.option('-l', 'limit', help="Subset of letters to iterate", type=int, default=-1)
+@click.option('-I', 'img_path', type=str, help="Starting URL of images", default='https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/')
+@click.option('-c', 'upload_config', type=str, help="profile to select usr, psw, and endpoint from psw.ini. see readme", default='belle_greene')
+def exec(exec_upload, prune, direct_path, limit, img_path, upload_config):
     cur_path = os.path.dirname(os.path.realpath(__file__))
     
     input_path = os.path.join(cur_path, "input")
@@ -205,7 +235,6 @@ def exec(exec_upload, prune, direct_path, limit, img_path):
     for cnt in range(1, len(letters_name)):
         
         letter_name = letters_name[cnt-1]
-        letter_number = f'Letter {cnt}'
                 
         # parse docx and extract paragraphs
         letter_para = _extract_paragraphs_from_docx(os.path.join(input_path, letter_name))
@@ -214,13 +243,18 @@ def exec(exec_upload, prune, direct_path, limit, img_path):
         sequences = _get_sequences_from_letters(letter_para)
 
         parsed_letters[cnt] = sequences
+
+        # appen paragraph from seqeuences without key to previous paragraph
+        for key, sequence in sequences.items():
+            if KEY_SEQUENCE not in sequence:
+                sequences[key-1][KEY_PARAGRAPHS].extend(sequence[KEY_PARAGRAPHS])
     
         for key, sequence in sequences.items():
 
-            _write_txt(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "txt"), f'{letter_number}_{key}.txt')
-            _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{letter_number}_{key}.html')
+            _write_txt(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "txt"), f'{cnt}_{key}.txt')
+            _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{cnt}_{key}.html')
             if direct_path:
-                _write_html(sequence, direct_path, letter_number)
+                _write_html(sequence[KEY_PARAGRAPHS], direct_path, f'{cnt}_{key}.html')
         
         # break if limit is reached
         if limit > 0 and cnt >= limit:
@@ -245,11 +279,28 @@ def exec(exec_upload, prune, direct_path, limit, img_path):
 
     # generate graphs for each letter page
     for key, parsed_letter in parsed_letters.items():
-        _create_graph_letter(key, parsed_letter, img_path, output_path)
-
-    
+        _create_graph_letter(key, parsed_letter, img_path, output_path)    
         
     # upload graphs
+    if exec_upload:
+        credentials = _get_credentials(upload_config)
+
+        for key, parsed_letter in parsed_letters.items():
+            for page, sequence in parsed_letter.items():
+
+                ttl = f'{key}_{page}.ttl'
+                graph_name = f'{RESOURCE}letter/{key}/document/{page}/context'
+                print(f'\nExecuting {graph_name} ...')
+
+                r_url = f'{credentials[KEY_ENDPOINT]}rdf-graph-store/?graph={graph_name}'
+
+                print('Deleting  ...')
+                delete_cmd = f'curl -u {credentials[KEY_USERNAME]}:{credentials[KEY_PASSWORD]} -X DELETE {r_url}'
+                os.system(delete_cmd)
+
+                print('Uploading ...\n')
+                upload_cmd = f"curl -u {credentials[KEY_USERNAME]}:{credentials[KEY_PASSWORD]} -X POST -H 'Content-Type: text/turtle' --data-binary '@{os.path.join(output_path, "ttl", ttl)}' {r_url}"
+                os.system(upload_cmd)
     
 
 if __name__ == '__main__':

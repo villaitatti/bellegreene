@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             //"args": ["-P", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-l", "5"]
-            "args": ["-P", "-l", "5"]
+            "args": ["-P", "-l", "1", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-u"]
         }
     ]
 }
