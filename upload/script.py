@@ -22,6 +22,10 @@ KEY_ENDPOINT = 'endpoint'
 BASE_URI = 'https://belle-greene.com/'
 RESOURCE = f'{BASE_URI}resource/'
 
+IMG_BASE_URI = 'https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/'
+IMG_BASE_URI_IIIF_START = 'https://iiif.itatti.harvard.edu/iiif/2/bellegreene-full!'
+IMG_BASE_URI_IIIF_END = '/full/full/0/default.jpg'
+
 PLATFORM = Namespace('http://www.researchspace.org/resource/system/')
 CUSTOM = Namespace(f'{RESOURCE}custom/')
 LDP = Namespace('http://www.w3.org/ns/ldp#')
@@ -123,17 +127,16 @@ def _restore(path):
         shutil.rmtree(path)
     os.mkdir(path)
 
-def _create_graph_letter(letter_number, sequences, img_path, output_path):
+def _create_graph_letter(letter_number, sequences, output_path):
 
     if not os.path.exists(os.path.join(output_path, 'ttl')):
         os.mkdir(os.path.join(output_path, 'ttl'))
             
     for page, sequence in sequences.items():
-        _create_graph(sequence, page, letter_number, img_path)
-        g = _create_graph(sequence, page, letter_number, img_path)
+        g = _create_graph(sequence, page, letter_number)
         g.serialize(os.path.join(output_path, 'ttl', f'{letter_number}_{page}.ttl'), format='turtle')
 
-def _create_graph(para, page_number, letter_number, img_path):
+def _create_graph(para, page_number, letter_number):
     g = Graph()
     
     LETTER_NODE = URIRef(f"https://belle-greene.com/resource/letter/{letter_number}")
@@ -161,9 +164,18 @@ def _create_graph(para, page_number, letter_number, img_path):
             'http://www.researchspace.org/resource/admin')))
         g.add((PAGE_NODE, CRM.P129i_is_subject_of, PAGE_NODE_DOCUMENT))
         
-        # Visual representation
-        IMAGE_NODE = URIRef(f'{img_path}{para[KEY_SEQUENCE]}.jpg')
+        # Visual representation thumbnail
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{para[KEY_SEQUENCE]}.jpg')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
+        g.add((IMAGE_NODE, CRM.P2_has_type, CUSTOM['thumbnail_img']))
+        g.add((IMAGE_NODE, RDF.type, URIRef(
+            'http://www.researchspace.org/ontology/EX_Digital_Image')))
+        g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
+
+        # Visual representation IIIF
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{para[KEY_SEQUENCE]}.jpg{IMG_BASE_URI_IIIF_END}')
+        g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
+        g.add((IMAGE_NODE, CRM.P2_has_type, CUSTOM['iiif_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
             'http://www.researchspace.org/ontology/EX_Digital_Image')))
         g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
@@ -216,9 +228,8 @@ def _get_credentials(type):
 @click.option('-P', 'prune', is_flag=True, help="Prune output folder", default=False)
 @click.option('-direct', 'direct_path', help="Only for development purposes", type=click.Path())
 @click.option('-l', 'limit', help="Subset of letters to iterate", type=int, default=-1)
-@click.option('-I', 'img_path', type=str, help="Starting URL of images", default='https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/')
 @click.option('-c', 'upload_config', type=str, help="profile to select usr, psw, and endpoint from psw.ini. see readme", default='belle_greene')
-def exec(exec_upload, prune, direct_path, limit, img_path, upload_config):
+def exec(exec_upload, prune, direct_path, limit, upload_config):
     cur_path = os.path.dirname(os.path.realpath(__file__))
     
     input_path = os.path.join(cur_path, "input")
@@ -279,7 +290,7 @@ def exec(exec_upload, prune, direct_path, limit, img_path, upload_config):
 
     # generate graphs for each letter page
     for key, parsed_letter in parsed_letters.items():
-        _create_graph_letter(key, parsed_letter, img_path, output_path)    
+        _create_graph_letter(key, parsed_letter, output_path)    
         
     # upload graphs
     if exec_upload:
