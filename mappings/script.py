@@ -15,7 +15,7 @@ UNDATED_DATE = "Undated date provided"
 
 # Configure logging
 logging.basicConfig(
-    filename='mappings/error.log',
+    filename='mappings/output/error.log',
     filemode='w',
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
@@ -159,7 +159,7 @@ def handle_transcribers(row_elem, row):
 def parse_letters(csv_file_path, xml_file_path, names):
     # Read the CSV file
     df = pd.read_csv(csv_file_path, dtype={
-                     'Box_Number': str, 'Folder_Number': str, 'Number_of_pages': str, 'Number_of_images': str})
+                     'Box_Number': str, 'Folder_Number': str, 'Number_of_pages': str, 'Number_of_images': str}, na_filter = False)
 
     # Replace spaces and invalid characters in column names with underscores
     df.columns = [sanitize_column_name(col) for col in df.columns]
@@ -339,7 +339,14 @@ def exec(parse, mappings, limit, upload_config):
     if mappings:
         print('Executing mappings ...')
 
-        command = 'java -jar x3ml-engine.jar -i output/letters.xml -x mappings.x3ml -p Belle_Greene_generator_policy.xml -o output.trig -f application/trig'
+        engine = os.path.join(cur_path, 'x3ml-engine.jar')
+        letters = os.path.join(output_path, 'letters.xml')
+        mappings = os.path.join(cur_path, 'mappings.x3ml')
+        generator_policy = os.path.join(cur_path, 'generator_policy.xml')
+        output_file = os.path.join(output_path, 'output.trig')
+        application_format = 'application/trig'
+
+        command = f'java -jar {engine} -i {letters} -x {mappings} -p {generator_policy} -o {output_file} -f {application_format}'
         os.system(command)
 
         print('Mappings completed\n')

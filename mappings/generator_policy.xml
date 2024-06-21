@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generator_policy>
+   <generator name="100_letter" prefix="bg" type="instance" uuid="no">
+      <pattern>letter/{id}</pattern>
+   </generator>
+   <generator name="110_letter_production" prefix="bg" type="any">
+      <pattern>letter/{id}/production</pattern>
+   </generator>
+   <generator name="111_letter_production_date" prefix="bg" type="any">
+      <pattern>letter/{id}/production/date</pattern>
+   </generator>
+</generator_policy>

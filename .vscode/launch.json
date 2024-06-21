@@ -5,12 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Current File",
+            "name": "Mappings",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/mappings/script.py",
             "console": "integratedTerminal",
-            //"args": ["-P", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-l", "5"]
+            "args": ["-p", "-m"]
+        },
+        {
+            "name": "Upload",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/upload/script.py",
+            "console": "integratedTerminal",
             "args": ["-P", "-l", "1", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-u"]
         }
     ]
