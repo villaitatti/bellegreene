@@ -178,8 +178,6 @@ def parse_letters(csv_file_path, xml_file_path, names):
                 # Skip these columns as they will be handled separately
                 continue
 
-
-
                 # Handle list values for specific columns
             list_values = handle_list_values(col, str(row[col]))
             if list_values:
@@ -236,6 +234,21 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         
                         end_tag = ET.SubElement(date_tag, 'end')
                         end_tag.text = dt[1]
+                    if col.startswith('sender') or col.startswith('recipient'):
+                        person_elem = ET.SubElement(row_elem, col)
+                        person_elem_identifier = ET.SubElement(
+                            person_elem, 'identifier')
+
+                        try:
+                            person_elem_identifier.text = names[item]['identifier']
+                        except Exception as ex:
+                            logging.error("An error occurred: name %s", f'{ex} not found in letter {row['Letter_ID']}')
+                            person_elem_identifier.text = item
+                            
+                            # Set the identifier to 00000 for Belle da Costa Greene
+                            if 'Greene, Belle da Costa' in item:
+                                person_elem_identifier.text = '00000'
+                    
                     else:
                         col_elem = ET.SubElement(row_elem, col)
                         # Escape special characters in the text content

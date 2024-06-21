@@ -9,4 +9,25 @@
    <generator name="111_letter_production_date" prefix="bg" type="any">
       <pattern>letter/{id}/production/date</pattern>
    </generator>
+   <generator name="120_letter_exchange" prefix="bg" type="any">
+      <pattern>letter/{id}/exchange</pattern>
+   </generator>
+   <generator name="121_letter_sender_activity" prefix="bg" type="any">
+      <pattern>letter/{id}/sender_activity</pattern>
+   </generator>
+   <generator name="200_person" prefix="bg" type="any">
+      <pattern>person/{id}</pattern>
+   </generator>
+   <generator name="000_type" prefix="bg" type="any">
+      <pattern>type/{type}</pattern>
+   </generator>
+   <generator name="GermanDateTime" type="any">
+      <custom generatorClass="gr.forth.GermanDate">
+         <set-arg name="bound" type="constant"/>
+         <set-arg name="text" type="xpath"/>
+      </custom>
+   </generator>
+   <generator name="122_letter_recipient_activity" prefix="bg" type="any">
+      <pattern>letter/{id}/recipient_activity</pattern>
+   </generator>
 </generator_policy>
