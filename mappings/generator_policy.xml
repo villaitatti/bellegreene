@@ -30,4 +30,7 @@
    <generator name="122_letter_recipient_activity" prefix="bg" type="any">
       <pattern>letter/{id}/recipient_activity</pattern>
    </generator>
+   <generator name="300_place" prefix="bg" type="any">
+      <pattern>place/{id}</pattern>
+   </generator>
 </generator_policy>

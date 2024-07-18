@@ -4,6 +4,7 @@ import html
 import json
 import click
 import logging
+import configparser
 import pandas as pd
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
@@ -12,6 +13,36 @@ from defusedxml.minidom import parseString
 
 
 UNDATED_DATE = "Undated date provided"
+
+KEYUSR = 'username'
+KEYPSW = 'password'
+KEYEND = 'endpoint'
+
+
+def _get_credentials(type):
+    """
+    Retrieves the credentials for a specific type from a configuration file.
+
+    Parameters:
+    type (str): The type of credentials to retrieve.
+
+    Returns:
+    dict: A dictionary containing the username, password, and endpoint for the specified type.
+    """
+    config = configparser.ConfigParser()
+    try:
+        path = os.path.join(os.path.abspath(os.getcwd()), 'mappings', 'psw.ini')
+        config.read(path)
+
+        return {
+            KEYUSR: config.get(type, KEYUSR),
+            KEYPSW: config.get(type, KEYPSW),
+            KEYEND: config.get(type, KEYEND)
+        }
+    
+    except Exception as ex:
+        print('Error. Have you created the psw.ini file? see readme.md')
+
 
 # Configure logging
 logging.basicConfig(
@@ -169,6 +200,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
     # Loop through the rows of the DataFrame
     for i, row in df.iterrows():
+        
         # Create a new element for each row
         row_elem = ET.SubElement(root, 'letter')
 
@@ -222,6 +254,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                 if not pd.isna(item):
                     # Handle dates
                     if col.startswith('Date_YYYYMMDD'):
+                        letter_date = item
                         dt = parse_dates(item)
 
                         date_tag = ET.SubElement(row_elem, 'date')
@@ -235,6 +268,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         end_tag = ET.SubElement(date_tag, 'end')
                         end_tag.text = dt[1]
                     if col.startswith('sender') or col.startswith('recipient'):
+                        
                         person_elem = ET.SubElement(row_elem, col)
                         person_elem_identifier = ET.SubElement(
                             person_elem, 'identifier')
@@ -248,13 +282,26 @@ def parse_letters(csv_file_path, xml_file_path, names):
                             # Set the identifier to 00000 for Belle da Costa Greene
                             if 'Greene, Belle da Costa' in item:
                                 person_elem_identifier.text = '00000'
+                                
+                        person_name_elem = ET.SubElement(person_elem, 'name')
+                        person_name_elem.text = item
+                        
+                        if col.startswith('sender'):
+                            letter_sender = item
+                        if col.startswith('recipient'):
+                            letter_recipient = item
                     
                     else:
                         col_elem = ET.SubElement(row_elem, col)
                         # Escape special characters in the text content
                         col_elem.text = html.escape(str(item))
 
+                        if col.startswith('Letter_ID'):
+                            letter_id = item
 
+
+        label_elem = ET.SubElement(row_elem, 'title')
+        label_elem.text = f'Letter {letter_id}: {letter_sender} to {letter_recipient}, {letter_date}'
 
         # Handle transcribers
         handle_transcribers(row_elem, row)
@@ -327,10 +374,11 @@ def parse_names(csv_file_path, xml_file_path):
 
 @click.command()
 @click.option('-p', 'parse', is_flag=True, help="Execute the parsing", default=False)
-@click.option('-m', 'mappings', is_flag=True, help="Execute the parsing", default=False)
+@click.option('-m', 'mappings', is_flag=True, help="Execute the mappings", default=False)
+@click.option('-u', 'upload', is_flag=True, help="Execute the uploading", default=False)
 @click.option('-l', 'limit', help="Subset of letters to iterate", type=int, default=-1)
 @click.option('-c', 'upload_config', type=str, help="profile to select usr, psw, and endpoint from psw.ini. see readme", default='belle_greene')
-def exec(parse, mappings, limit, upload_config):
+def exec(parse, mappings, upload, limit, upload_config):
     cur_path = os.path.dirname(os.path.realpath(__file__))
 
     input_path = os.path.join(cur_path, "input")
@@ -356,13 +404,30 @@ def exec(parse, mappings, limit, upload_config):
         letters = os.path.join(output_path, 'letters.xml')
         mappings = os.path.join(cur_path, 'mappings.x3ml')
         generator_policy = os.path.join(cur_path, 'generator_policy.xml')
-        output_file = os.path.join(output_path, 'output.trig')
-        application_format = 'application/trig'
+        output_file = os.path.join(output_path, 'output.ttl')
+        application_format = 'text/turtle'
 
         command = f'java -jar {engine} -i {letters} -x {mappings} -p {generator_policy} -o {output_file} -f {application_format}'
         os.system(command)
 
         print('Mappings completed\n')
+    
+    if upload:
+        
+        credentials = _get_credentials(upload_config)
+
+        data = os.path.join(output_path, 'output.ttl')
+        
+        endpoint = f'{credentials[KEYEND]}rdf-graph-store?graph=https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fdata%2Fcontext'
+        
+        delete_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X DELETE {endpoint}'
+        print('Deleting data ...')
+        print(os.system(delete_command))
+        
+        post_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X POST -H "Content-Type: text/turtle" --data-binary "@{data}" {endpoint}'
+
+        print('Uploading data ...')
+        print(os.system(post_command))
 
 
 if __name__ == '__main__':
