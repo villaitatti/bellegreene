@@ -33,4 +33,7 @@
    <generator name="300_place" prefix="bg" type="any">
       <pattern>place/{id}</pattern>
    </generator>
+   <generator name="400_subject" prefix="bg" type="any">
+        <pattern>subject/{id}</pattern>
+    </generator>
 </generator_policy>

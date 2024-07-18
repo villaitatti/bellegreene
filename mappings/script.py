@@ -220,8 +220,14 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         item_elem.text = html.escape(item)
 
                     elif col == 'Subjects':
-                        item_elem = ET.SubElement(parent_elem, 'subject')
-                        item_elem.text = html.escape(item)
+                        subject_elem = ET.SubElement(parent_elem, 'subject')
+                        
+                        subject_label_elem = ET.SubElement(subject_elem, 'label')
+                        subject_label_elem.text = html.escape(item)
+                        
+                        subject_id_elem = ET.SubElement(subject_elem, 'identifier')
+                        item = sanitize_column_name(item).lower()
+                        subject_id_elem.text = html.escape(item)
 
                     elif col == 'Letters_Contents':
                         item_elem = ET.SubElement(parent_elem, 'content')

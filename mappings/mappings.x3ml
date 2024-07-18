@@ -287,6 +287,33 @@
                </target_node>
             </range>
          </link>
+         <link>
+            <path>
+               <source_relation>
+                  <relation>Subjects/subject</relation>
+               </source_relation>
+               <target_relation>
+                  <if>
+                     <exists>identifier/text()</exists>
+                  </if>
+                  <relationship>crm:P129_is_about</relationship>
+               </target_relation>
+            </path>
+            <range>
+               <source_node>Subjects/subject</source_node>
+               <target_node>
+                  <entity>
+                    <type>bg:Subject</type>
+                    <instance_generator name="400_subject">
+                        <arg name="id" type="xpath">identifier/text()</arg>
+                    </instance_generator>
+                    <label_generator name="Literal">
+                        <arg name="text" type="xpath">label/text()</arg>
+                     </label_generator>
+                  </entity>
+               </target_node>
+            </range>
+         </link> 
       </mapping>
    </mappings>
 </x3ml>
