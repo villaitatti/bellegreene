@@ -223,7 +223,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         subject_elem = ET.SubElement(parent_elem, 'subject')
                         
                         subject_label_elem = ET.SubElement(subject_elem, 'label')
-                        subject_label_elem.text = html.escape(item)
+                        subject_label_elem.text = item.replace("BG's", "BG")
                         
                         subject_id_elem = ET.SubElement(subject_elem, 'identifier')
                         item = sanitize_column_name(item).lower()
