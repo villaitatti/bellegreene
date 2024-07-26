@@ -233,7 +233,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         item_elem = ET.SubElement(parent_elem, 'content')
                         item_elem.text = html.escape(item)
 
-                    elif item != 'nan' and col == 'Subject__People_Last_Name_First_Name':
+                    elif item and item != 'nan' and col == 'Subject__People_Last_Name_First_Name':
                         certain = True
                         if "?" in item:
                             certain = False
@@ -243,13 +243,17 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         item_elem = ET.SubElement(parent_elem, 'person')
                         item_elem_identifier = ET.SubElement(
                             item_elem, 'identifier')
+                        
+                        item_elem_label = ET.SubElement(item_elem, 'label')
+                        item_elem_label.text = item
 
                         try:
+
                             item_elem_identifier.text = names[item]['identifier']
                         except Exception as ex:
                             logging.error("An error occurred: name %s", f'{
                                           ex} not found in letter {row['Letter_ID']}')
-                            item_elem_identifier.text = item
+                            item_elem_identifier.text = sanitize_column_name(item)
 
                         item_elem_certain = ET.SubElement(item_elem, 'certain')
                         item_elem_certain.text = str(certain)
@@ -304,10 +308,25 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
                         if col.startswith('Letter_ID'):
                             letter_id = item
+                            
+                        if col.startswith('Location_Written_city_state'):
+                            city = item
+                        
+                        if col.startswith('Location_Written_country'):
+                            country = item
 
 
         label_elem = ET.SubElement(row_elem, 'title')
         label_elem.text = f'Letter {letter_id}: {letter_sender} to {letter_recipient}, {letter_date}'
+        
+        if city and country:
+            location_elem = ET.SubElement(row_elem, 'Location')
+            
+            location_label = ET.SubElement(location_elem, 'label')
+            location_label.text = f'{city}, {country}'
+            
+            location_id = ET.SubElement(location_elem, 'identifier')
+            location_id.text = sanitize_column_name(f'{city} {country}')
 
         # Handle transcribers
         handle_transcribers(row_elem, row)
