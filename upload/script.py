@@ -19,7 +19,7 @@ KEY_USERNAME = 'username'
 KEY_PASSWORD = 'password'
 KEY_ENDPOINT = 'endpoint'
 
-BASE_URI = 'https://belle-greene.com/'
+BASE_URI = 'https://bellegreene.itatti.harvard.edu/'
 RESOURCE = f'{BASE_URI}resource/'
 
 IMG_BASE_URI = 'https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/'
@@ -27,7 +27,7 @@ IMG_BASE_URI_IIIF_START = 'https://iiif.itatti.harvard.edu/iiif/2/bellegreene-fu
 IMG_BASE_URI_IIIF_END = '/full/full/0/default.jpg'
 
 PLATFORM = Namespace('http://www.researchspace.org/resource/system/')
-CUSTOM = Namespace(f'{RESOURCE}custom/')
+BG = Namespace(RESOURCE)
 LDP = Namespace('http://www.w3.org/ns/ldp#')
 CRM = Namespace('http://www.cidoc-crm.org/cidoc-crm/')
 DPUB_ANNOTATION = Namespace(f'{BASE_URI}document/annotation-schema/')
@@ -42,7 +42,7 @@ XSD = namespace.XSD
 def _extract_paragraphs_from_docx(docx_path):
     try:
         doc = docx.Document(docx_path)
-        paragraphs = [p.text for p in doc.paragraphs if p.text]
+        paragraphs = [p.text.strip() for p in doc.paragraphs if p.text]
         return paragraphs
     except Exception as e:
         print(str(e))
@@ -136,12 +136,21 @@ def _create_graph_letter(letter_number, sequences, output_path):
         g = _create_graph(sequence, page, letter_number)
         g.serialize(os.path.join(output_path, 'ttl', f'{letter_number}_{page}.ttl'), format='turtle')
 
+def trailing_zeros(number):
+    number_str = str(number)
+    if len(number_str) >= 5:
+        return number_str[:5]
+    else:
+        return number_str.rjust(5, '0')
+
 def _create_graph(para, page_number, letter_number):
     g = Graph()
     
-    LETTER_NODE = URIRef(f"https://belle-greene.com/resource/letter/{letter_number}")
-    PAGE_NODE = URIRef(f"https://belle-greene.com/resource/letter/{letter_number}/page/{page_number}")
-    PAGE_NODE_DOCUMENT = URIRef(f"https://belle-greene.com/resource/letter/{letter_number}/document/{page_number}")
+    letter_number = trailing_zeros(letter_number)
+    
+    LETTER_NODE = URIRef(f"{RESOURCE}letter/{letter_number}")
+    PAGE_NODE = URIRef(f"{RESOURCE}letter/{letter_number}/page/{page_number}")
+    PAGE_NODE_DOCUMENT = URIRef(f"{RESOURCE}letter/{letter_number}/document/{page_number}")
     
     try:
         
@@ -167,7 +176,7 @@ def _create_graph(para, page_number, letter_number):
         # Visual representation thumbnail
         IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{para[KEY_SEQUENCE]}.jpg')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
-        g.add((IMAGE_NODE, CRM.P2_has_type, CUSTOM['thumbnail_img']))
+        g.add((IMAGE_NODE, CRM.P2_has_type, BG['thumbnail_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
             'http://www.researchspace.org/ontology/EX_Digital_Image')))
         g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
@@ -175,19 +184,19 @@ def _create_graph(para, page_number, letter_number):
         # Visual representation IIIF
         IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{para[KEY_SEQUENCE]}.jpg{IMG_BASE_URI_IIIF_END}')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
-        g.add((IMAGE_NODE, CRM.P2_has_type, CUSTOM['iiif_img']))
+        g.add((IMAGE_NODE, CRM.P2_has_type, BG['iiif_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
             'http://www.researchspace.org/ontology/EX_Digital_Image')))
         g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
 
-        g.add((PAGE_NODE, RDF.type, CUSTOM['Page_Letter']))
+        g.add((PAGE_NODE, RDF.type, BG['Page_Letter']))
         # g.add((PAGE_NODE, RDF.type, CRM['E22_Man-Made_Object']))
         g.add((PAGE_NODE, RDFS.label, Literal(page_number, datatype=XSD.string)))
-        g.add((PAGE_NODE, CUSTOM['index'], Literal(page_number, datatype=XSD.string)))
-        g.add((PAGE_NODE, CUSTOM['part_of'], LETTER_NODE))
+        g.add((PAGE_NODE, BG['index'], Literal(page_number, datatype=XSD.string)))
+        g.add((PAGE_NODE, BG['part_of'], LETTER_NODE))
         
         g.namespace_manager.bind('Platform', PLATFORM, override=True, replace=True)
-        g.namespace_manager.bind('custom', CUSTOM, override=True, replace=True)
+        g.namespace_manager.bind('bg', BG, override=True, replace=True)
         g.namespace_manager.bind('crm', CRM, override=True, replace=True)
         g.namespace_manager.bind('crmdig', CRMDIG, override=True, replace=True)
         g.namespace_manager.bind('ldp', LDP, override=True, replace=True)
@@ -253,19 +262,21 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
         # get sequences from paragraphs
         sequences = _get_sequences_from_letters(letter_para)
 
-        parsed_letters[cnt] = sequences
+        letter_id = trailing_zeros(cnt)
 
-        # appen paragraph from seqeuences without key to previous paragraph
+        parsed_letters[letter_id] = sequences
+
+        # Find sequences that have not a IIIF representation related and append them to the previous sequence
         for key, sequence in sequences.items():
             if KEY_SEQUENCE not in sequence:
                 sequences[key-1][KEY_PARAGRAPHS].extend(sequence[KEY_PARAGRAPHS])
     
         for key, sequence in sequences.items():
 
-            _write_txt(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "txt"), f'{cnt}_{key}.txt')
-            _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{cnt}_{key}.html')
+            _write_txt(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "txt"), f'{letter_id}_{key}.txt')
+            _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{letter_id}_{key}.html')
             if direct_path:
-                _write_html(sequence[KEY_PARAGRAPHS], direct_path, f'{cnt}_{key}.html')
+                _write_html(sequence[KEY_PARAGRAPHS], direct_path, f'{letter_id}_{key}.html')
         
         # break if limit is reached
         if limit > 0 and cnt >= limit:
@@ -281,7 +292,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
 
     # Check if number of pages are not equal
     for key, parsed_letter in parsed_letters.items():
-        row = letters_df.iloc[key-1]
+        row = letters_df.iloc[int(key)-1]
         # from this row, get the cell with column number of pages
         num_pages = int(row['Number of Pages'])
         if num_pages != len(parsed_letter):
