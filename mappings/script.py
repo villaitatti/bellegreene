@@ -317,7 +317,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
 
         label_elem = ET.SubElement(row_elem, 'title')
-        label_elem.text = f'Letter {letter_id}: {letter_sender} to {letter_recipient}, {letter_date}'
+        label_elem.text = f'Letter {letter_id}: {letter_sender} to {letter_recipient}'
         
         if city and country:
             location_elem = ET.SubElement(row_elem, 'Location')
