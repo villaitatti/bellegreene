@@ -9,7 +9,8 @@ import configparser
 import urllib
 from rdflib import Graph, URIRef, namespace, Namespace, Literal
 
-REGEX_PAGE = r'\[p\.\s(\d+)\]'
+REGEX_PAGE = r'\[p[t]?[.]?[\s]?(\d+)\]'
+
 REGEX_SEQUENCE = r'^\d+_\d{3}$'
 
 KEY_PARAGRAPHS = 'paragraphs'
@@ -255,6 +256,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     for cnt in range(1, len(letters_name)):
         
         letter_name = letters_name[cnt-1]
+        letter_id = trailing_zeros(cnt)
                 
         # parse docx and extract paragraphs
         letter_para = _extract_paragraphs_from_docx(os.path.join(input_path, letter_name))
@@ -262,13 +264,10 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
         # get sequences from paragraphs
         sequences = _get_sequences_from_letters(letter_para)
 
-        letter_id = trailing_zeros(cnt)
-
-        parsed_letters[letter_id] = sequences
-
         # Find sequences that have not a IIIF representation related and append them to the previous sequence
         for key, sequence in sequences.items():
-            if KEY_SEQUENCE not in sequence:
+            # Key > 1 to avoid the first sequence, there are a few cases where the first sequence has dates
+            if KEY_SEQUENCE not in sequence and key > 1:
                 sequences[key-1][KEY_PARAGRAPHS].extend(sequence[KEY_PARAGRAPHS])
     
         for key, sequence in sequences.items():
@@ -277,6 +276,8 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
             _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{letter_id}_{key}.html')
             if direct_path:
                 _write_html(sequence[KEY_PARAGRAPHS], direct_path, f'{letter_id}_{key}.html')
+        
+        parsed_letters[letter_id] = sequences
         
         # break if limit is reached
         if limit > 0 and cnt >= limit:
@@ -290,13 +291,16 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     print(f'Total number of letters:\t\t{total_letters}')
     print(f'Total number of parsed letters:\t\t{len(parsed_letters.values())}')
 
-    # Check if number of pages are not equal
-    for key, parsed_letter in parsed_letters.items():
-        row = letters_df.iloc[int(key)-1]
-        # from this row, get the cell with column number of pages
-        num_pages = int(row['Number of Pages'])
-        if num_pages != len(parsed_letter):
-            print(f'Number of pages in Letter {key} is not equal to the number of pages in the parsed letter')
+    try:
+        # Check if number of pages are not equal
+        for key, parsed_letter in parsed_letters.items():
+            row = letters_df.iloc[int(key)-1]
+            # from this row, get the cell with column number of pages
+            num_pages = int(row['Number of Pages'])
+            if num_pages != len(parsed_letter):
+                print(f'Number of pages in Letter {key} is not equal to the number of pages in the parsed letter')
+    except ValueError as e:
+        print(str(e))
 
 
     # generate graphs for each letter page
