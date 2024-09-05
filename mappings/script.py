@@ -204,6 +204,8 @@ def parse_letters(csv_file_path, xml_file_path, names):
         # Create a new element for each row
         row_elem = ET.SubElement(root, 'letter')
 
+        unparsed_dt = None
+
         # Loop through the columns
         for col in df.columns:
             if col.startswith('Name_of_Transcriber_1') or col.startswith('Transcriber_1_') or col.startswith('Date_Claimed_YYYYMMDD') or col.startswith('Date_Completed_YYYYMMDD') or col.startswith('Name_of_Transcriber_2') or col.startswith('Transcriber_2_') or col.startswith('Date_Claimed_YYYYMMDD1') or col.startswith('Date_Completed_YYYYMMDD1'):
@@ -274,6 +276,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                         
                         start_tag = ET.SubElement(date_tag, 'start')
                         start_tag.text = dt[0]
+                        unparsed_dt = dt[0]
                         
                         end_tag = ET.SubElement(date_tag, 'end')
                         end_tag.text = dt[1]
@@ -316,8 +319,16 @@ def parse_letters(csv_file_path, xml_file_path, names):
                             country = item
 
 
-        label_elem = ET.SubElement(row_elem, 'title')
-        label_elem.text = f'Letter {letter_id}: {letter_sender} to {letter_recipient}'
+        try:
+            # Parse the date and format
+            parsed_dt = datetime.strptime(unparsed_dt, '%Y-%m-%d').strftime('%d %b %Y')
+
+            label_elem = ET.SubElement(row_elem, 'title')
+            label_elem.text = f'{parsed_dt}; {letter_sender} to {letter_recipient}'
+        except Exception as ex:
+            logging.error("An error occurred: date %s", f'{ex} not found in letter {letter_id}')
+            label_elem = ET.SubElement(row_elem, 'title')
+            label_elem.text = f'{unparsed_dt}; {letter_sender} to {letter_recipient}'
         
         if city and country:
             location_elem = ET.SubElement(row_elem, 'Location')

@@ -1,346 +1,376 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <x3ml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      source_type="xpath"
-      version="1.0"
-      xsi:noNamespaceSchemaLocation="https://isl.ics.forth.gr/x3ml/schema/x3ml.xsd">
-   <info>
-      <title>Belle Greene</title>
-      <general_description/>
-      <source>
-         <source_info>
-            <source_schema schema_file="letters.xml" type="xml" version="">letters</source_schema>
-            <namespaces>
-               <namespace prefix="" uri=""/>
-            </namespaces>
-         </source_info>
-      </source>
-      <target>
-         <target_info>
-            <target_schema schema_file="CIDOC_CRM_v7.1.3.rdf" type="rdf" version="">CIDOC_CRM_v7.1.3</target_schema>
-            <namespaces>
-               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
-               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
-               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
-               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
-               <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
-               <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/"/>
-            </namespaces>
-         </target_info>
-         <target_info>
-            <target_schema schema_file="CRMpc_v1.1_0.rdfs" type="rdfs" version="">CRMpc_v1.1_0</target_schema>
-            <namespaces>
-               <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#"/>
-               <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#"/>
-               <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#"/>
-               <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
-               <namespace prefix="crmpc" uri="http://www.cidoc-crm.org/cidoc-crm/"/>
-               <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/"/>
-            </namespaces>
-         </target_info>
-      </target>
-      <mapping_info>
-         <mapping_created_by_org/>
-         <mapping_created_by_person/>
-         <in_collaboration_with/>
-      </mapping_info>
-      <example_data_info>
-         <example_data_from/>
-         <example_data_contact_person/>
-         <example_data_source_record/>
-         <generator_policy_info/>
-         <example_data_target_record/>
-         <thesaurus_info/>
-      </example_data_info>
-   </info>
-   <namespaces>
-      <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/"/>
-   </namespaces>
-   <mappings>
-      <mapping>
-         <domain>
-            <source_node>//letter</source_node>
-            <target_node>
-               <if>
-                  <exists>Letter_ID/text()</exists>
-               </if>
-               <entity>
-                  <type>crm:E22_Human-Made_Object</type>
-                  <type>bg:Letter</type>
-                  <instance_generator name="100_letter">
-                     <arg name="id" type="xpath">Letter_ID/text()</arg>
-                  </instance_generator>
-                  <label_generator name="Literal">
-                    <arg name="text" type="xpath">title/text()</arg>
-                 </label_generator>
-               </entity>
-            </target_node>
-         </domain>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>date/start</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>text()</exists>
-                  </if>
-                  <relationship>crm:P108i_was_produced_by</relationship>
-                  <entity>
-                     <type>crm:E12_Production</type>
-                     <instance_generator name="110_letter_production">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P4_has_time-span</relationship>
-                  <entity>
-                     <type>crm:E52_Time-Span</type>
-                     <instance_generator name="111_letter_production_date">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P82a_begin_of_the_begin</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>date/start</source_node>
-               <target_node>
-                  <entity>
-                    <type>http://www.w3.org/2001/XMLSchema#date</type>
-                     <instance_generator name="GermanDateTime">
-                        <arg name="bound" type="constant">Lower</arg>
-                        <arg name="text" type="xpath">text()</arg>
-                     </instance_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>date/end</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>text()</exists>
-                  </if>
-                  <relationship>crm:P108i_was_produced_by</relationship>
-                  <entity>
-                     <type>crm:E12_Production</type>
-                     <instance_generator name="110_letter_production">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P4_has_time-span</relationship>
-                  <entity>
-                     <type>crm:E52_Time-Span</type>
-                     <instance_generator name="111_letter_production_date">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P82b_end_of_the_end</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>date/end</source_node>
-               <target_node>
-                  <entity>
-                    <type>http://www.w3.org/2001/XMLSchema#date</type>
-                     <instance_generator name="GermanDateTime">
-                        <arg name="bound" type="constant">Upper</arg>
-                        <arg name="text" type="xpath">text()</arg>
-                     </instance_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>sender/identifier</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>text()</exists>
-                  </if>
-                  <relationship>crm:P16i_was_used_for</relationship>
-                  <entity>
-                     <type>crm:E7_Activity</type>
-                     <instance_generator name="120_letter_exchange">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P01i_is_domain_of</relationship>
-                  <entity>
-                     <type>crm:PC14_carried_out_by</type>
-                     <instance_generator name="121_letter_sender_activity">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                     <additional>
-                        <relationship>crm:P14.1_in_the_role_of</relationship>
+    source_type="xpath"
+    version="1.0"
+    xsi:noNamespaceSchemaLocation="https://isl.ics.forth.gr/x3ml/schema/x3ml.xsd">
+    <info>
+        <title>Belle Greene</title>
+        <general_description />
+        <source>
+            <source_info>
+                <source_schema schema_file="letters.xml" type="xml" version="">letters</source_schema>
+                <namespaces>
+                    <namespace prefix="" uri="" />
+                </namespaces>
+            </source_info>
+        </source>
+        <target>
+            <target_info>
+                <target_schema schema_file="CIDOC_CRM_v7.1.3.rdf" type="rdf" version="">CIDOC_CRM_v7.1.3</target_schema>
+                <namespaces>
+                    <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#" />
+                    <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#" />
+                    <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#" />
+                    <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+                    <namespace prefix="crm" uri="http://www.cidoc-crm.org/cidoc-crm/" />
+                    <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/" />
+                </namespaces>
+            </target_info>
+            <target_info>
+                <target_schema schema_file="CRMpc_v1.1_0.rdfs" type="rdfs" version="">CRMpc_v1.1_0</target_schema>
+                <namespaces>
+                    <namespace prefix="xsd" uri="http://www.w3.org/2001/XMLSchema#" />
+                    <namespace prefix="rdfs" uri="http://www.w3.org/2000/01/rdf-schema#" />
+                    <namespace prefix="owl" uri="http://www.w3.org/2002/07/owl#" />
+                    <namespace prefix="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+                    <namespace prefix="crmpc" uri="http://www.cidoc-crm.org/cidoc-crm/" />
+                    <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/" />
+                </namespaces>
+            </target_info>
+        </target>
+        <mapping_info>
+            <mapping_created_by_org />
+            <mapping_created_by_person />
+            <in_collaboration_with />
+        </mapping_info>
+        <example_data_info>
+            <example_data_from />
+            <example_data_contact_person />
+            <example_data_source_record />
+            <generator_policy_info />
+            <example_data_target_record />
+            <thesaurus_info />
+        </example_data_info>
+    </info>
+    <namespaces>
+        <namespace prefix="bg" uri="https://bellegreene.itatti.harvard.edu/resource/" />
+    </namespaces>
+    <mappings>
+        <mapping>
+            <domain>
+                <source_node>//letter</source_node>
+                <target_node>
+                    <if>
+                        <exists>Letter_ID/text()</exists>
+                    </if>
+                    <entity>
+                        <type>crm:E22_Human-Made_Object</type>
+                        <type>bg:Letter</type>
+                        <instance_generator name="100_letter">
+                            <arg name="id" type="xpath">Letter_ID/text()</arg>
+                        </instance_generator>
+                        <label_generator name="Literal">
+                            <arg name="text" type="xpath">title/text()</arg>
+                        </label_generator>
+                    </entity>
+                </target_node>
+            </domain>
+
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>Letter_ID</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P48_has_preferred_identifier</relationship>
+
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>Letter_ID</source_node>
+                    <target_node>
                         <entity>
-                           <type>crm:E55_Type</type>
-                           <instance_generator name="000_type">
-                              <arg name="type" type="constant">Sender</arg>
-                           </instance_generator>
+                            <type>crm:E42_Identifier</type>
+                            <instance_generator name="101_letter_index">
+                                <arg name="id" type="xpath">text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">text()</arg>
+                            </label_generator>
                         </entity>
-                     </additional>
-                  </entity>
-                  <relationship>crm:P02_has_range</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>sender/identifier</source_node>
-               <target_node>
-                  <entity>
-                     <type>crm:E21_Person</type>
-                     <instance_generator name="200_person">
-                        <arg name="id" type="xpath">text()</arg>
-                     </instance_generator>
-                     <label_generator name="Literal">
-                        <arg name="text" type="xpath">../name/text()</arg>
-                     </label_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>recipient/identifier</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>text()</exists>
-                  </if>
-                  <relationship>crm:P16i_was_used_for</relationship>
-                  <entity>
-                     <type>crm:E7_Activity</type>
-                     <instance_generator name="120_letter_exchange">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P01i_is_domain_of</relationship>
-                  <entity>
-                     <type>crm:PC14_carried_out_by</type>
-                     <instance_generator name="122_letter_recipient_activity">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                     <additional>
-                        <relationship>crm:P14.1_in_the_role_of</relationship>
+                    </target_node>
+                </range>
+            </link>
+
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>date/start</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P108i_was_produced_by</relationship>
                         <entity>
-                           <type>crm:E55_Type</type>
-                           <instance_generator name="000_type">
-                              <arg name="type" type="constant">Recipient</arg>
-                           </instance_generator>
+                            <type>crm:E12_Production</type>
+                            <instance_generator name="110_letter_production">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
                         </entity>
-                     </additional>
-                  </entity>
-                  <relationship>crm:P02_has_range</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>recipient/identifier</source_node>
-               <target_node>
-                  <entity>
-                     <type>crm:E21_Person</type>
-                     <instance_generator name="200_person">
-                        <arg name="id" type="xpath">text()</arg>
-                     </instance_generator>
-                     <label_generator name="Literal">
-                        <arg name="text" type="xpath">../name/text()</arg>
-                     </label_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>Location/label</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>text()</exists>
-                  </if>
-                  <relationship>crm:P108i_was_produced_by</relationship>
-                  <entity>
-                     <type>crm:E12_Production</type>
-                     <instance_generator name="110_letter_production">
-                        <arg name="id" type="xpath">../../Letter_ID/text()</arg>
-                     </instance_generator>
-                  </entity>
-                  <relationship>crm:P7_took_place_at</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>Location/label</source_node>
-               <target_node>
-                  <entity>
-                     <type>crm:E53_Place</type>
-                     <instance_generator name="300_place">
-                        <arg name="id" type="xpath">../identifier/text()</arg>
-                     </instance_generator>
-                     <label_generator name="Literal">
-                        <arg name="text" type="xpath">text()</arg>
-                     </label_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link>
-         <link>
-            <path>
-               <source_relation>
-                  <relation>Subjects/subject</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>identifier/text()</exists>
-                  </if>
-                  <relationship>crm:P129_is_about</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>Subjects/subject</source_node>
-               <target_node>
-                  <entity>
-                    <type>bg:Subject</type>
-                    <instance_generator name="400_subject">
-                        <arg name="id" type="xpath">identifier/text()</arg>
-                    </instance_generator>
-                    <label_generator name="Literal">
-                        <arg name="text" type="xpath">label/text()</arg>
-                     </label_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link> 
-         <link>
-            <path>
-               <source_relation>
-                  <relation>Subject__People_Last_Name_First_Name/person</relation>
-               </source_relation>
-               <target_relation>
-                  <if>
-                     <exists>identifier/text()</exists>
-                  </if>
-                  <relationship>crm:P67_refers_to</relationship>
-               </target_relation>
-            </path>
-            <range>
-               <source_node>Subject__People_Last_Name_First_Name/person</source_node>
-               <target_node>
-                  <entity>
-                    <type>crm:E21_Person</type>
-                    <instance_generator name="200_person">
-                        <arg name="id" type="xpath">identifier/text()</arg>
-                    </instance_generator>
-                    <label_generator name="Literal">
-                        <arg name="text" type="xpath">label/text()</arg>
-                     </label_generator>
-                  </entity>
-               </target_node>
-            </range>
-         </link> 
-      </mapping>
-   </mappings>
+                        <relationship>crm:P4_has_time-span</relationship>
+                        <entity>
+                            <type>crm:E52_Time-Span</type>
+                            <instance_generator name="111_letter_production_date">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P82a_begin_of_the_begin</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>date/start</source_node>
+                    <target_node>
+                        <entity>
+                            <type>http://www.w3.org/2001/XMLSchema#date</type>
+                            <instance_generator name="GermanDateTime">
+                                <arg name="bound" type="constant">Lower</arg>
+                                <arg name="text" type="xpath">text()</arg>
+                            </instance_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>date/end</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P108i_was_produced_by</relationship>
+                        <entity>
+                            <type>crm:E12_Production</type>
+                            <instance_generator name="110_letter_production">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P4_has_time-span</relationship>
+                        <entity>
+                            <type>crm:E52_Time-Span</type>
+                            <instance_generator name="111_letter_production_date">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P82b_end_of_the_end</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>date/end</source_node>
+                    <target_node>
+                        <entity>
+                            <type>http://www.w3.org/2001/XMLSchema#date</type>
+                            <instance_generator name="GermanDateTime">
+                                <arg name="bound" type="constant">Upper</arg>
+                                <arg name="text" type="xpath">text()</arg>
+                            </instance_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>sender/identifier</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P16i_was_used_for</relationship>
+                        <entity>
+                            <type>crm:E7_Activity</type>
+                            <instance_generator name="120_letter_exchange">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P01i_is_domain_of</relationship>
+                        <entity>
+                            <type>crm:PC14_carried_out_by</type>
+                            <instance_generator name="121_letter_sender_activity">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                            <additional>
+                                <relationship>crm:P14.1_in_the_role_of</relationship>
+                                <entity>
+                                    <type>crm:E55_Type</type>
+                                    <instance_generator name="000_type">
+                                        <arg name="type" type="constant">Sender</arg>
+                                    </instance_generator>
+                                </entity>
+                            </additional>
+                        </entity>
+                        <relationship>crm:P02_has_range</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>sender/identifier</source_node>
+                    <target_node>
+                        <entity>
+                            <type>crm:E21_Person</type>
+                            <instance_generator name="200_person">
+                                <arg name="id" type="xpath">text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">../name/text()</arg>
+                            </label_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>recipient/identifier</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P16i_was_used_for</relationship>
+                        <entity>
+                            <type>crm:E7_Activity</type>
+                            <instance_generator name="120_letter_exchange">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P01i_is_domain_of</relationship>
+                        <entity>
+                            <type>crm:PC14_carried_out_by</type>
+                            <instance_generator name="122_letter_recipient_activity">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                            <additional>
+                                <relationship>crm:P14.1_in_the_role_of</relationship>
+                                <entity>
+                                    <type>crm:E55_Type</type>
+                                    <instance_generator name="000_type">
+                                        <arg name="type" type="constant">Recipient</arg>
+                                    </instance_generator>
+                                </entity>
+                            </additional>
+                        </entity>
+                        <relationship>crm:P02_has_range</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>recipient/identifier</source_node>
+                    <target_node>
+                        <entity>
+                            <type>crm:E21_Person</type>
+                            <instance_generator name="200_person">
+                                <arg name="id" type="xpath">text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">../name/text()</arg>
+                            </label_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>Location/label</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>text()</exists>
+                        </if>
+                        <relationship>crm:P108i_was_produced_by</relationship>
+                        <entity>
+                            <type>crm:E12_Production</type>
+                            <instance_generator name="110_letter_production">
+                                <arg name="id" type="xpath">../../Letter_ID/text()</arg>
+                            </instance_generator>
+                        </entity>
+                        <relationship>crm:P7_took_place_at</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>Location/label</source_node>
+                    <target_node>
+                        <entity>
+                            <type>crm:E53_Place</type>
+                            <instance_generator name="300_place">
+                                <arg name="id" type="xpath">../identifier/text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">text()</arg>
+                            </label_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>Subjects/subject</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>identifier/text()</exists>
+                        </if>
+                        <relationship>crm:P129_is_about</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>Subjects/subject</source_node>
+                    <target_node>
+                        <entity>
+                            <type>bg:Subject</type>
+                            <instance_generator name="400_subject">
+                                <arg name="id" type="xpath">identifier/text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">label/text()</arg>
+                            </label_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+            <link>
+                <path>
+                    <source_relation>
+                        <relation>Subject__People_Last_Name_First_Name/person</relation>
+                    </source_relation>
+                    <target_relation>
+                        <if>
+                            <exists>identifier/text()</exists>
+                        </if>
+                        <relationship>crm:P67_refers_to</relationship>
+                    </target_relation>
+                </path>
+                <range>
+                    <source_node>Subject__People_Last_Name_First_Name/person</source_node>
+                    <target_node>
+                        <entity>
+                            <type>crm:E21_Person</type>
+                            <instance_generator name="200_person">
+                                <arg name="id" type="xpath">identifier/text()</arg>
+                            </instance_generator>
+                            <label_generator name="Literal">
+                                <arg name="text" type="xpath">label/text()</arg>
+                            </label_generator>
+                        </entity>
+                    </target_node>
+                </range>
+            </link>
+        </mapping>
+    </mappings>
 </x3ml>

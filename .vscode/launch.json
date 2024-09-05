@@ -18,7 +18,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/upload/script.py",
             "console": "integratedTerminal",
-            "args": ["-P", "-l", "1", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-u"]
+            "args": ["-P", "-l", "5", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-u"]
         }
     ]
 }
