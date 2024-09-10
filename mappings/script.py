@@ -434,13 +434,28 @@ def exec(parse, mappings, upload, limit, upload_config):
         print('Parsing completed\n')
 
     if mappings:
-        print('Executing mappings ...')
+        print('Executing mappings letters ...')
 
         engine = os.path.join(cur_path, 'x3ml-engine.jar')
         letters = os.path.join(output_path, 'letters.xml')
-        mappings = os.path.join(cur_path, 'mappings.x3ml')
+        mappings = os.path.join(cur_path, 'mappings_letters.x3ml')
         generator_policy = os.path.join(cur_path, 'generator_policy.xml')
-        output_file = os.path.join(output_path, 'output.ttl')
+        output_file = os.path.join(output_path, 'output_letters.ttl')
+        application_format = 'text/turtle'
+
+        command = f'java -jar {engine} -i {letters} -x {mappings} -p {generator_policy} -o {output_file} -f {application_format}'
+        os.system(command)
+
+        print('Mappings completed\n')
+
+        
+        print('Executing mappings names ...')
+        
+        engine = os.path.join(cur_path, 'x3ml-engine.jar')
+        letters = os.path.join(output_path, 'names.xml')
+        mappings = os.path.join(cur_path, 'mappings_names.x3ml')
+        generator_policy = os.path.join(cur_path, 'generator_policy.xml')
+        output_file = os.path.join(output_path, 'output_names.ttl')
         application_format = 'text/turtle'
 
         command = f'java -jar {engine} -i {letters} -x {mappings} -p {generator_policy} -o {output_file} -f {application_format}'
@@ -449,21 +464,32 @@ def exec(parse, mappings, upload, limit, upload_config):
         print('Mappings completed\n')
     
     if upload:
+
+        def execute_update(data, credentials, graph):
+            endpoint = f'{credentials[KEYEND]}rdf-graph-store?graph={graph}'
+        
+            delete_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X DELETE {endpoint}'
+            print('Deleting data ...')
+            print(os.system(delete_command))
+            
+            post_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X POST -H "Content-Type: text/turtle" --data-binary "@{data}" {endpoint}'
+
+            print('Uploading data ...')
+            print(os.system(post_command))
+            
         
         credentials = _get_credentials(upload_config)
 
-        data = os.path.join(output_path, 'output.ttl')
+        print('Updating letters ...')
+        data = os.path.join(output_path, 'output_letters.ttl')
+        execute_update(data, credentials, graph='https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fletters%2Fcontext')
+        print('Completed\n')
         
-        endpoint = f'{credentials[KEYEND]}rdf-graph-store?graph=https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fdata%2Fcontext'
+        print('Updating names ...')
+        data = os.path.join(output_path, 'output_names.ttl')
+        execute_update(data, credentials, graph='https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fnames%2Fcontext')
+        print('Completed\n')
         
-        delete_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X DELETE {endpoint}'
-        print('Deleting data ...')
-        print(os.system(delete_command))
-        
-        post_command = f'curl -u {credentials[KEYUSR]}:{credentials[KEYPSW]} -X POST -H "Content-Type: text/turtle" --data-binary "@{data}" {endpoint}'
-
-        print('Uploading data ...')
-        print(os.system(post_command))
 
 
 if __name__ == '__main__':

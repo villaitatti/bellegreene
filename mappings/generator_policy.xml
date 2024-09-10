@@ -21,6 +21,15 @@
     <generator name="200_person" prefix="bg" type="any">
         <pattern>person/{id}</pattern>
     </generator>
+    <generator name="202_person_description" prefix="bg" type="any">
+        <pattern>person/{id}/description</pattern>
+    </generator>
+    <generator name="203_person_life_dates" prefix="bg" type="any">
+        <pattern>person/{id}/life_dates</pattern>
+    </generator>
+    <generator name="204_person_nickname" prefix="bg" type="any">
+        <pattern>person/{id}/nickname</pattern>
+    </generator>
     <generator name="000_type" prefix="bg" type="any">
         <pattern>type/{type}</pattern>
     </generator>
