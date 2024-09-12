@@ -23,6 +23,16 @@ KEY_ENDPOINT = 'endpoint'
 BASE_URI = 'https://bellegreene.itatti.harvard.edu/'
 RESOURCE = f'{BASE_URI}resource/'
 
+KEY_VALUE = 'value'
+KEY_TYPE = 'type'
+KEY_TEXT = 'text'
+KEY_RUNS = 'runs'
+
+KEY_BOLD = 'bold'
+KEY_ITALIC = 'italic'
+KEY_UNDERLINE = 'underline'
+KEY_STRIKE = 'strike'
+
 IMG_BASE_URI = 'https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/'
 IMG_BASE_URI_IIIF_START = 'https://iiif.itatti.harvard.edu/iiif/2/bellegreene-full!'
 IMG_BASE_URI_IIIF_END = '/full/full/0/default.jpg'
@@ -43,10 +53,35 @@ XSD = namespace.XSD
 def _extract_paragraphs_from_docx(docx_path):
     try:
         doc = docx.Document(docx_path)
-        paragraphs = [p.text.strip() for p in doc.paragraphs if p.text]
-        return paragraphs
+        paragraphs = [_extract_paragraph(para) for para in doc.paragraphs if para]
+        return [para for para in paragraphs if para is not None]
     except Exception as e:
         print(str(e))
+
+def _extract_paragraph(para):
+    runs = [_extract_run(run) for run in para.runs if run.text.strip()]
+    if runs:
+        return {
+            KEY_TEXT: para.text.strip(),
+            KEY_RUNS: runs
+        }
+    return None
+
+def _extract_run(run):
+    run_text = run.text.strip()
+    run_type = _get_run_type(run)
+    return {KEY_VALUE: run_text, KEY_TYPE: run_type}
+
+def _get_run_type(run):
+    if run.bold:
+        return KEY_BOLD
+    elif run.italic:
+        return KEY_ITALIC
+    elif run.underline:
+        return KEY_UNDERLINE
+    elif run.font.strike:
+        return KEY_STRIKE
+    return KEY_TEXT
 
 def _get_letters(path):
     try:
@@ -69,10 +104,10 @@ def _get_sequences_from_letters(raw_letter):
         
         # if the current paragraph is not a sequence, process
         # otherwise it has been already processed in the previous iteration
-        if not re.match(REGEX_SEQUENCE, para):
+        if not re.match(REGEX_SEQUENCE, para[KEY_TEXT]):
         
             # if the paragraph is a page, add it to the pages
-            match = re.search(REGEX_PAGE, para)
+            match = re.search(REGEX_PAGE, para[KEY_TEXT])
             
             if match:
                 # extract number from paragraph 
@@ -84,7 +119,7 @@ def _get_sequences_from_letters(raw_letter):
                 sequences[page_number][KEY_PARAGRAPHS] = letter
                 
                 # Check if the next paragraph is a sequence
-                if i+1 < len(raw_letter) and re.match(REGEX_SEQUENCE, raw_letter[i+1]):
+                if i+1 < len(raw_letter) and re.match(REGEX_SEQUENCE, raw_letter[i+1][KEY_TEXT]):
                     sequences[page_number][KEY_SEQUENCE] = raw_letter[i+1]
                 
                 # restore letters
@@ -104,7 +139,7 @@ def _write_txt(paragraphs, path, name):
     try:
         with open(os.path.join(path, name), "w") as f:
             for para in paragraphs:
-                f.write(para + "\n")
+                f.write(para[KEY_TEXT] + "\n")
     except Exception as e:
         print(str(e))
 
@@ -117,7 +152,19 @@ def _write_html(paragraphs, path, name):
             f.write("<html>\n")
             f.write("<body>\n")
             for para in paragraphs:
-                f.write(f"<p>{para}</p>\n")
+                f.write("<p>")
+                for run in para[KEY_RUNS]:
+                    if run[KEY_TYPE] == KEY_BOLD:
+                        f.write(f"<b>{run[KEY_VALUE]}</b>")
+                    elif run[KEY_TYPE] == KEY_ITALIC:
+                        f.write(f"<i>{run[KEY_VALUE]}</i>")
+                    elif run[KEY_TYPE] == KEY_UNDERLINE:
+                        f.write(f"<u>{run[KEY_VALUE]}</u>")
+                    elif run[KEY_TYPE] == KEY_STRIKE:
+                        f.write(f"<s>{run[KEY_VALUE]}</s>")
+                    else:
+                        f.write(run[KEY_VALUE])
+                f.write("</p>\n")
             f.write("</body>\n")
             f.write("</html>\n")
     except Exception as e:
@@ -173,9 +220,15 @@ def _create_graph(para, page_number, letter_number):
         g.add((PAGE_NODE_DOCUMENT, PROV.wasAttributedTo, URIRef(
             'http://www.researchspace.org/resource/admin')))
         g.add((PAGE_NODE, CRM.P129i_is_subject_of, PAGE_NODE_DOCUMENT))
+
+        text = ''
+        for para in para[KEY_PARAGRAPHS]:
+            text += para[KEY_TEXT] + '\n'
+        
+        g.add((PAGE_NODE, RDF.value, Literal(text, datatype=XSD.string)))
         
         # Visual representation thumbnail
-        IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{para[KEY_SEQUENCE]}.jpg')
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{para[KEY_SEQUENCE][KEY_TEXT]}.jpg')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
         g.add((IMAGE_NODE, CRM.P2_has_type, BG['thumbnail_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
@@ -183,7 +236,7 @@ def _create_graph(para, page_number, letter_number):
         g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
 
         # Visual representation IIIF
-        IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{para[KEY_SEQUENCE]}.jpg{IMG_BASE_URI_IIIF_END}')
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{para[KEY_SEQUENCE][KEY_TEXT]}.jpg{IMG_BASE_URI_IIIF_END}')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
         g.add((IMAGE_NODE, CRM.P2_has_type, BG['iiif_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
