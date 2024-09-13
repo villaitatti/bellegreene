@@ -33,6 +33,10 @@ KEY_ITALIC = 'italic'
 KEY_UNDERLINE = 'underline'
 KEY_STRIKE = 'strike'
 
+KEY_ID = 'id'
+KEY_PAGES = 'pages'
+KEY_REPRESENTATION = 'representation'
+
 IMG_BASE_URI = 'https://iiif-bucket.s3.eu-west-1.amazonaws.com/bellegreene500/'
 IMG_BASE_URI_IIIF_START = 'https://iiif.itatti.harvard.edu/iiif/2/bellegreene-full!'
 IMG_BASE_URI_IIIF_END = '/full/full/0/default.jpg'
@@ -48,6 +52,34 @@ MB_DIARIES = Namespace('https://mbdiaries.itatti.harvard.edu/ontology/')
 RDF = namespace.RDF
 RDFS = namespace.RDFS
 XSD = namespace.XSD
+
+
+"""_summary_`
+
+Now the system accepts letters in the following format:
+
+letter {
+    id: string
+    pages: [
+        {
+            id: int,
+            representation: string,
+            paragraphs: [
+                {
+                    text: string,
+                    runs: [
+                        {
+                            value: string,
+                            type: string
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+"""
 
 
 def _extract_paragraphs_from_docx(docx_path):
@@ -92,9 +124,12 @@ def _get_letters(path):
     except Exception as e:
         print(str(e))
 
-def _get_sequences_from_letters(raw_letter):
-    sequences = {}
-    letter = []
+def _get_letters_from_raw(letter_id, raw_letter):
+    
+    paragraphs = []
+    pages = []
+    page = {}
+
     raw_letter.reverse()
     
     # iterate paragraphs from the end of the letter
@@ -112,38 +147,45 @@ def _get_sequences_from_letters(raw_letter):
             if match:
                 # extract number from paragraph 
                 page_number = int(match.group(1))
-                sequences[page_number] = {}
 
-                letter.reverse()
+                paragraphs.reverse()
                 
-                sequences[page_number][KEY_PARAGRAPHS] = letter
+                page[KEY_ID] = page_number
+                page[KEY_PARAGRAPHS] = paragraphs
                 
                 # Check if the next paragraph is a sequence
                 if i+1 < len(raw_letter) and re.match(REGEX_SEQUENCE, raw_letter[i+1][KEY_TEXT]):
-                    sequences[page_number][KEY_SEQUENCE] = raw_letter[i+1]
+                    page[KEY_REPRESENTATION] = raw_letter[i+1][KEY_TEXT]
                 
-                # restore letters
-                letter = []
+                # restore page
+                pages.append(page)
+                page = {}
+                paragraphs = []
 
             # otherwise, add the paragraph to the letter
             else:
-                letter.append(para)
+                paragraphs.append(para)
 
-    return sequences
+    # Order pages from first to last
+    pages.reverse()
+    return {
+        KEY_ID: trailing_zeros(letter_id),
+        KEY_PAGES: pages
+    }
 
-def _write_txt(paragraphs, path, name):
+def _write_txt(page, path, name):
 
     if not os.path.isdir(path):
         os.mkdir(path)
     
     try:
         with open(os.path.join(path, name), "w") as f:
-            for para in paragraphs:
+            for para in page[KEY_PARAGRAPHS]:
                 f.write(para[KEY_TEXT] + "\n")
     except Exception as e:
         print(str(e))
 
-def _write_html(paragraphs, path, name):
+def _write_html(page, path, name):
     if not os.path.isdir(path):
         os.mkdir(path)
     
@@ -151,17 +193,17 @@ def _write_html(paragraphs, path, name):
         with open(os.path.join(path, name), "w") as f:
             f.write("<html>\n")
             f.write("<body>\n")
-            for para in paragraphs:
+            for para in page[KEY_PARAGRAPHS]:
                 f.write("<p>")
                 for run in para[KEY_RUNS]:
                     if run[KEY_TYPE] == KEY_BOLD:
-                        f.write(f"<b>{run[KEY_VALUE]}</b>")
+                        f.write(f" <b>{run[KEY_VALUE]}</b> ")
                     elif run[KEY_TYPE] == KEY_ITALIC:
-                        f.write(f"<i>{run[KEY_VALUE]}</i>")
+                        f.write(f" <i>{run[KEY_VALUE]}</i> ")
                     elif run[KEY_TYPE] == KEY_UNDERLINE:
-                        f.write(f"<u>{run[KEY_VALUE]}</u>")
+                        f.write(f" <u>{run[KEY_VALUE]}</u> ")
                     elif run[KEY_TYPE] == KEY_STRIKE:
-                        f.write(f"<s>{run[KEY_VALUE]}</s>")
+                        f.write(f" <s>{run[KEY_VALUE]}</s> ")
                     else:
                         f.write(run[KEY_VALUE])
                 f.write("</p>\n")
@@ -175,14 +217,16 @@ def _restore(path):
         shutil.rmtree(path)
     os.mkdir(path)
 
-def _create_graph_letter(letter_number, sequences, output_path):
+def _create_graph_letter(letter, output_path):
+
+    letter_id = letter[KEY_ID]
 
     if not os.path.exists(os.path.join(output_path, 'ttl')):
         os.mkdir(os.path.join(output_path, 'ttl'))
             
-    for page, sequence in sequences.items():
-        g = _create_graph(sequence, page, letter_number)
-        g.serialize(os.path.join(output_path, 'ttl', f'{letter_number}_{page}.ttl'), format='turtle')
+    for page in letter[KEY_PAGES]:
+        g = _create_graph(page, letter_id)
+        g.serialize(os.path.join(output_path, 'ttl', f'{letter_id}_{page[KEY_ID]}.ttl'), format='turtle')
 
 def trailing_zeros(number):
     number_str = str(number)
@@ -191,14 +235,15 @@ def trailing_zeros(number):
     else:
         return number_str.rjust(5, '0')
 
-def _create_graph(para, page_number, letter_number):
+def _create_graph(page, letter_id):
     g = Graph()
     
-    letter_number = trailing_zeros(letter_number)
+    letter_id = trailing_zeros(letter_id)
+    page_id = page[KEY_ID]
     
-    LETTER_NODE = URIRef(f"{RESOURCE}letter/{letter_number}")
-    PAGE_NODE = URIRef(f"{RESOURCE}letter/{letter_number}/page/{page_number}")
-    PAGE_NODE_DOCUMENT = URIRef(f"{RESOURCE}letter/{letter_number}/document/{page_number}")
+    LETTER_NODE = URIRef(f"{RESOURCE}letter/{letter_id}")
+    PAGE_NODE = URIRef(f"{RESOURCE}letter/{letter_id}/page/{page_id}")
+    PAGE_NODE_DOCUMENT = URIRef(f"{RESOURCE}letter/{letter_id}/document/{page_id}")
     
     try:
         
@@ -208,11 +253,11 @@ def _create_graph(para, page_number, letter_number):
         g.add((PAGE_NODE_DOCUMENT, RDF.type, URIRef(
             f'{BASE_URI}ontology/Document')))
         g.add((PAGE_NODE_DOCUMENT, RDFS.label, Literal(
-            f'LDP Container of document file of {letter_number}_{page_number}.html', datatype=XSD.string)))
+            f'LDP Container of document file of {letter_id}_{page_id}.html', datatype=XSD.string)))
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.fileContext, URIRef(
             'http://www.researchspace.org/resource/TextDocuments')))
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.fileName, Literal(
-            f'{letter_number}_{page_number}.html', datatype=XSD.string)))
+            f'{letter_id}_{page_id}.html', datatype=XSD.string)))
         g.add((PAGE_NODE_DOCUMENT, PLATFORM.mediaType,
             Literal('form-data', datatype=XSD.string)))
         g.add((PAGE_NODE_DOCUMENT, PROV.generatedAtTime, Literal(
@@ -222,13 +267,13 @@ def _create_graph(para, page_number, letter_number):
         g.add((PAGE_NODE, CRM.P129i_is_subject_of, PAGE_NODE_DOCUMENT))
 
         text = ''
-        for para in para[KEY_PARAGRAPHS]:
-            text += para[KEY_TEXT] + '\n'
+        for paragraph in page[KEY_PARAGRAPHS]:
+            text += paragraph[KEY_TEXT] + '\n'
         
         g.add((PAGE_NODE, RDF.value, Literal(text, datatype=XSD.string)))
         
         # Visual representation thumbnail
-        IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{para[KEY_SEQUENCE][KEY_TEXT]}.jpg')
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI}{page[KEY_REPRESENTATION]}.jpg')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
         g.add((IMAGE_NODE, CRM.P2_has_type, BG['thumbnail_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
@@ -236,7 +281,7 @@ def _create_graph(para, page_number, letter_number):
         g.add((PAGE_NODE, CRM.P183i_has_representation, IMAGE_NODE))
 
         # Visual representation IIIF
-        IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{para[KEY_SEQUENCE][KEY_TEXT]}.jpg{IMG_BASE_URI_IIIF_END}')
+        IMAGE_NODE = URIRef(f'{IMG_BASE_URI_IIIF_START}{page[KEY_REPRESENTATION]}.jpg{IMG_BASE_URI_IIIF_END}')
         g.add((IMAGE_NODE, RDF.type, CRM.E38_Image))
         g.add((IMAGE_NODE, CRM.P2_has_type, BG['iiif_img']))
         g.add((IMAGE_NODE, RDF.type, URIRef(
@@ -245,8 +290,8 @@ def _create_graph(para, page_number, letter_number):
 
         g.add((PAGE_NODE, RDF.type, BG['Page_Letter']))
         # g.add((PAGE_NODE, RDF.type, CRM['E22_Man-Made_Object']))
-        g.add((PAGE_NODE, RDFS.label, Literal(page_number, datatype=XSD.string)))
-        g.add((PAGE_NODE, BG['index'], Literal(page_number, datatype=XSD.string)))
+        g.add((PAGE_NODE, RDFS.label, Literal(page_id, datatype=XSD.string)))
+        g.add((PAGE_NODE, BG['index'], Literal(page_id, datatype=XSD.string)))
         g.add((PAGE_NODE, BG['part_of'], LETTER_NODE))
         
         g.namespace_manager.bind('Platform', PLATFORM, override=True, replace=True)
@@ -298,7 +343,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     input_path = os.path.join(cur_path, "input")
     output_path = os.path.join(cur_path, "output")
 
-    parsed_letters = {}
+    parsed_letters = []
 
     if prune:
         _restore(output_path)
@@ -314,61 +359,65 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
         # parse docx and extract paragraphs
         letter_para = _extract_paragraphs_from_docx(os.path.join(input_path, letter_name))
 
-        # get sequences from paragraphs
-        sequences = _get_sequences_from_letters(letter_para)
+        # get letter from raw paragraphs
+        letter = _get_letters_from_raw(letter_id, letter_para)
 
-        # Find sequences that have not a IIIF representation related and append them to the previous sequence
-        for key, sequence in sequences.items():
+        # Find pages that have not a IIIF representation related and append them to the previous page
+        # And remove the other page
+        for page in letter[KEY_PAGES]:
             # Key > 1 to avoid the first sequence, there are a few cases where the first sequence has dates
-            if KEY_SEQUENCE not in sequence and key > 1:
-                sequences[key-1][KEY_PARAGRAPHS].extend(sequence[KEY_PARAGRAPHS])
+            if KEY_REPRESENTATION not in page and letter[KEY_PAGES].index(page) > 0:
+                letter[KEY_PAGES][letter[KEY_PAGES].index(page)-1][KEY_PARAGRAPHS].extend(page[KEY_PARAGRAPHS])
+                letter[KEY_PAGES].remove(page)
     
-        for key, sequence in sequences.items():
+        for id, page in enumerate(letter[KEY_PAGES]):
 
-            _write_txt(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "txt"), f'{letter_id}_{key}.txt')
-            _write_html(sequence[KEY_PARAGRAPHS], os.path.join(output_path, "html"), f'{letter_id}_{key}.html')
+            _write_txt(page, os.path.join(output_path, "txt"), f'{letter[KEY_ID]}_{page[KEY_ID]}.txt')
+            _write_html(page, os.path.join(output_path, "html"), f'{letter[KEY_ID]}_{page[KEY_ID]}.html')
             if direct_path:
-                _write_html(sequence[KEY_PARAGRAPHS], direct_path, f'{letter_id}_{key}.html')
-        
-        parsed_letters[letter_id] = sequences
+                _write_html(page, direct_path, f'{letter[KEY_ID]}_{page[KEY_ID]}.html')
+
+        parsed_letters.append(letter) 
         
         # break if limit is reached
         if limit > 0 and cnt >= limit:
             break
         
+
     
     # execute pandas
     letters_df = pd.read_csv(os.path.join(input_path,'control.csv'))
     total_letters = len(letters_df)
     
     print(f'Total number of letters:\t\t{total_letters}')
-    print(f'Total number of parsed letters:\t\t{len(parsed_letters.values())}')
+    print(f'Total number of parsed letters:\t\t{len(parsed_letters)}')
 
     try:
         # Check if number of pages are not equal
-        for key, parsed_letter in parsed_letters.items():
-            row = letters_df.iloc[int(key)-1]
+        for key, parsed_letter in enumerate(parsed_letters):
+            row = letters_df.iloc[int(key)]
             # from this row, get the cell with column number of pages
             num_pages = int(row['Number of Pages'])
-            if num_pages != len(parsed_letter):
-                print(f'Number of pages in Letter {key} is not equal to the number of pages in the parsed letter')
+            if num_pages != len(parsed_letter[KEY_PAGES]):
+                print(f'Letter {key+1} has {len(parsed_letter[KEY_PAGES])} pages, but the control file says have {num_pages}')
     except ValueError as e:
         print(str(e))
 
-
     # generate graphs for each letter page
-    for key, parsed_letter in parsed_letters.items():
-        _create_graph_letter(key, parsed_letter, output_path)    
+    for letter in parsed_letters:
+        _create_graph_letter(letter, output_path)    
         
     # upload graphs
     if exec_upload:
         credentials = _get_credentials(upload_config)
 
-        for key, parsed_letter in parsed_letters.items():
-            for page, sequence in parsed_letter.items():
-
-                ttl = f'{key}_{page}.ttl'
-                graph_name = f'{RESOURCE}letter/{key}/document/{page}/context'
+        for letter in parsed_letters:
+            letter_id = letter[KEY_ID]
+            
+            for page in letter[KEY_PAGES]:
+                page_id = page[KEY_ID]
+                ttl = f'{letter_id}_{page_id}.ttl'
+                graph_name = f'{RESOURCE}letter/{letter_id}/document/{page_id}/context'
                 print(f'\nExecuting {graph_name} ...')
 
                 r_url = f'{credentials[KEY_ENDPOINT]}rdf-graph-store/?graph={graph_name}'
