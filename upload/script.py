@@ -86,7 +86,9 @@ def _extract_paragraphs_from_docx(docx_path):
     try:
         doc = docx.Document(docx_path)
         paragraphs = [_extract_paragraph(para) for para in doc.paragraphs if para]
-        return [para for para in paragraphs if para is not None]
+        if len(paragraphs) > 0:
+            return [para for para in paragraphs if para is not None]
+        return []
     except Exception as e:
         print(str(e))
 
@@ -130,46 +132,49 @@ def _get_letters_from_raw(letter_id, raw_letter):
     pages = []
     page = {}
 
-    raw_letter.reverse()
+    if raw_letter and len(raw_letter) > 0:
+
+        raw_letter.reverse()
     
-    # iterate paragraphs from the end of the letter
-    for i in range(len(raw_letter)):
-        
-        para = raw_letter[i]
-        
-        # if the current paragraph is not a sequence, process
-        # otherwise it has been already processed in the previous iteration
-        if not re.match(REGEX_SEQUENCE, para[KEY_TEXT]):
-        
-            # if the paragraph is a page, add it to the pages
-            match = re.search(REGEX_PAGE, para[KEY_TEXT])
+        # iterate paragraphs from the end of the letter
+        for i in range(len(raw_letter)):
             
-            if match:
-                # extract number from paragraph 
-                page_number = int(match.group(1))
-
-                paragraphs.reverse()
+            para = raw_letter[i]
+            
+            # if the current paragraph is not a sequence, process
+            # otherwise it has been already processed in the previous iteration
+            if not re.match(REGEX_SEQUENCE, para[KEY_TEXT]):
+            
+                # if the paragraph is a page, add it to the pages
+                match = re.search(REGEX_PAGE, para[KEY_TEXT])
                 
-                page[KEY_ID] = page_number
-                page[KEY_PARAGRAPHS] = paragraphs
-                
-                # Check if the next paragraph is a sequence
-                if i+1 < len(raw_letter) and re.match(REGEX_SEQUENCE, raw_letter[i+1][KEY_TEXT]):
-                    page[KEY_REPRESENTATION] = raw_letter[i+1][KEY_TEXT]
-                
-                # restore page
-                pages.append(page)
-                page = {}
-                paragraphs = []
+                if match:
+                    # extract number from paragraph 
+                    page_number = int(match.group(1))
 
-            # otherwise, add the paragraph to the letter
-            else:
-                paragraphs.append(para)
+                    paragraphs.reverse()
+                    
+                    page[KEY_ID] = page_number
+                    page[KEY_PARAGRAPHS] = paragraphs
+                    
+                    # Check if the next paragraph is a sequence
+                    if i+1 < len(raw_letter) and re.match(REGEX_SEQUENCE, raw_letter[i+1][KEY_TEXT]):
+                        page[KEY_REPRESENTATION] = raw_letter[i+1][KEY_TEXT]
+                    
+                    # restore page
+                    pages.append(page)
+                    page = {}
+                    paragraphs = []
 
-    # Order pages from first to last
-    pages.reverse()
+                # otherwise, add the paragraph to the letter
+                else:
+                    paragraphs.append(para)
+
+        # Order pages from first to last
+        pages.reverse()
+    
     return {
-        KEY_ID: trailing_zeros(letter_id),
+        KEY_ID: letter_id,
         KEY_PAGES: pages
     }
 
@@ -351,13 +356,12 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     letters_name = _get_letters(input_path)
 
     # iterate over letter names
-    for cnt in range(1, len(letters_name)):
+    for i, document in enumerate(letters_name):
         
-        letter_name = letters_name[cnt-1]
-        letter_id = trailing_zeros(cnt)
+        letter_id = '0' + document.replace('.docx', '').replace('BG_BB_', '')
                 
         # parse docx and extract paragraphs
-        letter_para = _extract_paragraphs_from_docx(os.path.join(input_path, letter_name))
+        letter_para = _extract_paragraphs_from_docx(os.path.join(input_path, document))
 
         # get letter from raw paragraphs
         letter = _get_letters_from_raw(letter_id, letter_para)
@@ -380,7 +384,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
         parsed_letters.append(letter) 
         
         # break if limit is reached
-        if limit > 0 and cnt >= limit:
+        if limit > 0 and i >= limit:
             break
         
 
@@ -390,6 +394,8 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     total_letters = len(letters_df)
     
     print(f'Total number of letters:\t\t{total_letters}')
+    if limit > 0:
+        print(f'Limit:\t\t\t\t\t{limit}')
     print(f'Total number of parsed letters:\t\t{len(parsed_letters)}')
 
     try:
