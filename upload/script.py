@@ -400,7 +400,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
             break
 
     # execute pandas
-    letters_df = pd.read_csv(os.path.join(input_path, 'BG to BB Letters_Spreadsheet - Sheet1.csv'))
+    letters_df = pd.read_csv(os.path.join(cur_path, 'BG to BB Letters_Spreadsheet - Sheet1.csv'))
     letters_df.set_index('Letter_ID', inplace=True)
     total_letters = len(letters_df)
 

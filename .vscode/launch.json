@@ -1,25 +1,39 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Mappings",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/mappings/script.py",
-            "console": "integratedTerminal",
-            "args": ["-p", "-m", "-u"]
-        },
-        {
-            "name": "Upload",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/upload/script.py",
-            "console": "integratedTerminal",
-            //"args": ["-P", "-l", "51", "-direct", "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file", "-u"]
-            "args": ["-P", "-l", "501"]
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Mappings",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/mappings/script.py",
+      "console": "integratedTerminal",
+      "args": ["-p", "-m", "-u"]
+    },
+    {
+      "name": "Upload - 50",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/upload/script.py",
+      "console": "integratedTerminal",
+      "args": [
+        "-P",
+        "-l",
+        "50",
+        "-direct",
+        "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file",
+        "-u"
+      ]
+    },
+    {
+      "name": "TEST - 500",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/upload/script.py",
+      "console": "integratedTerminal",
+      "args": ["-P", "-l", "500"]
+    }
+  ]
 }
