@@ -65,7 +65,7 @@
                     </if>
                     <entity>
                         <type>crm:E21_Person</type>
-                        <type>bg:person</type>
+                        <type>bg:Person</type>
                         <instance_generator name="200_person">
                             <arg name="id" type="xpath">identifier/text()</arg>
                         </instance_generator>
