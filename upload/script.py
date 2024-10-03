@@ -1,5 +1,6 @@
 import click
 import os
+import csv
 import docx
 import shutil
 import re
@@ -351,6 +352,22 @@ def _get_credentials(type):
         print('Error. Have you created the psw.ini file? see readme.md')
         print(str(ex))
 
+def count_rows_in_csv(csv_file, required_columns):
+    with open(csv_file, mode='r', newline='') as file:
+        reader = csv.reader(file)
+        headers = next(reader)  # Read the header row
+        
+        # Get the indices of the required columns
+        required_indices = [headers.index(col) for col in required_columns if col in headers]
+
+        valid_row_count = 0
+        
+        # Iterate through the rows and check for non-null values in the required columns
+        for row in reader:
+            if all(row[idx].strip() for idx in required_indices):  # Check if all required columns are non-empty
+                valid_row_count += 1
+
+    return valid_row_count
 
 @click.command()
 @click.option('-u', 'exec_upload', is_flag=True, help="Execute the upload", default=False)
@@ -402,12 +419,22 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
     # execute pandas
     letters_df = pd.read_csv(os.path.join(cur_path, os.pardir, 'BG to BB Letters_Spreadsheet - Sheet1.csv'))
     letters_df.set_index('Letter_ID', inplace=True)
-    total_letters = len(letters_df)
+    
+    total_letters = count_rows_in_csv(os.path.join(cur_path, os.pardir, 'BG to BB Letters_Spreadsheet - Sheet1.csv'), ['Letter_ID'])
 
     print(f'Total number of letters:\t\t{total_letters}')
     if limit > 0:
         print(f'Limit:\t\t\t\t\t{limit}')
     print(f'Total number of parsed letters:\t\t{len(parsed_letters)}')
+
+    # if totale letters in the csv file is different from the parsed letters
+    # find which one, from the csv file, is missing in the parsed letters
+    if total_letters != len(parsed_letters):
+        for letter_id in letters_df.index:
+            if letter_id not in [letter[KEY_ID] for letter in parsed_letters]:
+                print(f'Letter {letter_id} is missing in the parsed letters')
+    
+    print()      
 
     # Check the pages
     for letter_id, row in letters_df.iterrows():
