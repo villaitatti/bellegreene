@@ -348,6 +348,8 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
                           if col.startswith('Letter_ID'):
                               letter_id = item
+                              letter_number = ET.SubElement(row_elem, 'number')
+                              letter_number.text = letter_id.replace("0",'')
 
                           if col.startswith('Location_Written_city_state'):
                               city = item

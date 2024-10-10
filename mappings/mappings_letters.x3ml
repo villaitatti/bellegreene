@@ -255,6 +255,162 @@
             <link>
               <path>
                   <source_relation>
+                      <relation>number</relation>
+                  </source_relation>
+                  <target_relation>
+                      <if>
+                          <exists>text()</exists>
+                      </if>
+                      <relationship>crm:P1_is_identified_by</relationship>
+
+                  </target_relation>
+              </path>
+              <range>
+                  <source_node>number</source_node>
+                  <target_node>
+                      <entity>
+                          <type>crm:E41_Appellation</type>
+                          <instance_generator name="100a_letter_identifier">
+                              <arg name="id" type="xpath">../Letter_ID/text()</arg>
+                              <arg name="identifier" type="constant">letter_number</arg>
+                          </instance_generator>
+                          <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                          </label_generator>
+                          <additional>
+                            <relationship>crm:P2_has_type</relationship>
+                            <entity>
+                                <type>crm:E55_Type</type>
+                                <instance_generator name="000_type">
+                                    <arg name="type" type="constant">letter_number</arg>
+                                </instance_generator>
+                            </entity>
+                          </additional>
+                      </entity>
+                  </target_node>
+              </range>
+            </link>
+
+            <link>
+              <path>
+                  <source_relation>
+                      <relation>Box_Number</relation>
+                  </source_relation>
+                  <target_relation>
+                      <if>
+                          <exists>text()</exists>
+                      </if>
+                      <relationship>crm:P1_is_identified_by</relationship>
+
+                  </target_relation>
+              </path>
+              <range>
+                  <source_node>Box_Number</source_node>
+                  <target_node>
+                      <entity>
+                          <type>crm:E41_Appellation</type>
+                          <instance_generator name="100a_letter_identifier">
+                              <arg name="id" type="xpath">../Letter_ID/text()</arg>
+                              <arg name="identifier" type="constant">box_number</arg>
+                          </instance_generator>
+                          <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                          </label_generator>
+                          <additional>
+                            <relationship>crm:P2_has_type</relationship>
+                            <entity>
+                                <type>crm:E55_Type</type>
+                                <instance_generator name="000_type">
+                                    <arg name="type" type="constant">box_number</arg>
+                                </instance_generator>
+                            </entity>
+                          </additional>
+                      </entity>
+                  </target_node>
+              </range>
+            </link> 
+
+            <link>
+              <path>
+                  <source_relation>
+                      <relation>Folder_Number</relation>
+                  </source_relation>
+                  <target_relation>
+                      <if>
+                          <exists>text()</exists>
+                      </if>
+                      <relationship>crm:P1_is_identified_by</relationship>
+
+                  </target_relation>
+              </path>
+              <range>
+                  <source_node>Folder_Number</source_node>
+                  <target_node>
+                      <entity>
+                          <type>crm:E41_Appellation</type>
+                          <instance_generator name="100a_letter_identifier">
+                              <arg name="id" type="xpath">../Letter_ID/text()</arg>
+                              <arg name="identifier" type="constant">folder_number</arg>
+                          </instance_generator>
+                          <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                          </label_generator>
+                          <additional>
+                            <relationship>crm:P2_has_type</relationship>
+                            <entity>
+                                <type>crm:E55_Type</type>
+                                <instance_generator name="000_type">
+                                    <arg name="type" type="constant">folder_number</arg>
+                                </instance_generator>
+                            </entity>
+                          </additional>
+                      </entity>
+                  </target_node>
+              </range>
+            </link> 
+
+            <link>
+              <path>
+                  <source_relation>
+                      <relation>I_Tatti_Letter_Number</relation>
+                  </source_relation>
+                  <target_relation>
+                      <if>
+                          <exists>text()</exists>
+                      </if>
+                      <relationship>crm:P1_is_identified_by</relationship>
+
+                  </target_relation>
+              </path>
+              <range>
+                  <source_node>I_Tatti_Letter_Number</source_node>
+                  <target_node>
+                      <entity>
+                          <type>crm:E41_Appellation</type>
+                          <instance_generator name="100a_letter_identifier">
+                              <arg name="id" type="xpath">../Letter_ID/text()</arg>
+                              <arg name="identifier" type="constant">itatti_letter_number</arg>
+                          </instance_generator>
+                          <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                          </label_generator>
+                          <additional>
+                            <relationship>crm:P2_has_type</relationship>
+                            <entity>
+                                <type>crm:E55_Type</type>
+                                <instance_generator name="000_type">
+                                    <arg name="type" type="constant">itatti_letter_number</arg>
+                                </instance_generator>
+                            </entity>
+                          </additional>
+                      </entity>
+                  </target_node>
+              </range>
+            </link> 
+
+            <link>
+              <path>
+                  <source_relation>
                       <relation>transcribers/transcriber</relation>
                   </source_relation>
                   <target_relation>
