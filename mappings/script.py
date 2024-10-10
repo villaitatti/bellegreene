@@ -155,7 +155,7 @@ def handle_transcribers(row_elem, row):
 
     # Handle transcriber 1
     if not pd.isna(row['Name_of_Transcriber_1_Last_Name_First_Name']):
-        transcriber_1_elem = ET.SubElement(transcribers_elem, 'transcriber_1')
+        transcriber_1_elem = ET.SubElement(transcribers_elem, 'transcriber')
         name_1_elem = ET.SubElement(transcriber_1_elem, 'name')
         name_1_elem.text = html.escape(
             str(row['Name_of_Transcriber_1_Last_Name_First_Name']))
@@ -177,7 +177,7 @@ def handle_transcribers(row_elem, row):
 
     # Handle transcriber 2
     if not pd.isna(row['Name_of_Transcriber_2_Last_Name_First_Name']):
-        transcriber_2_elem = ET.SubElement(transcribers_elem, 'transcriber_2')
+        transcriber_2_elem = ET.SubElement(transcribers_elem, 'transcriber')
         name_2_elem = ET.SubElement(transcriber_2_elem, 'name')
         name_2_elem.text = html.escape(
             str(row['Name_of_Transcriber_2_Last_Name_First_Name']))
@@ -251,7 +251,13 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
                       elif col == 'Letters_Contents':
                           item_elem = ET.SubElement(parent_elem, 'content')
-                          item_elem.text = html.escape(item)
+                          
+                          item_elem_identifier = ET.SubElement(item_elem, 'identifier')
+                          item_elem_identifier.text = f"{list_values.index(item)}"
+                          
+                          item_elem_label = ET.SubElement(item_elem, 'label')
+                          item_elem_label.text = item
+
 
                       elif item and item != 'nan' and col == 'Subject__People_Last_Name_First_Name':
                           certain = True
@@ -298,6 +304,15 @@ def parse_letters(csv_file_path, xml_file_path, names):
                           start_tag.text = dt[0]
                           unparsed_dt = dt[0]
 
+                          try:
+                            formatted_date = datetime.strptime(
+                                dt[0], '%Y-%m-%d').strftime('%d %B %Y')
+                            formatted_date_tag = ET.SubElement(date_tag, 'formatted')
+                            formatted_date_tag.text = formatted_date
+                          except Exception as ex:
+                            logging.error("An error occurred: date %s", f'{
+                                          ex} not found in letter {row['Letter_ID']}')
+
                           end_tag = ET.SubElement(date_tag, 'end')
                           end_tag.text = dt[1]
                       if col.startswith('sender') or col.startswith('recipient'):
@@ -329,7 +344,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
                       else:
                           col_elem = ET.SubElement(row_elem, col)
                           # Escape special characters in the text content
-                          col_elem.text = html.escape(str(item))
+                          col_elem.text = str(item)
 
                           if col.startswith('Letter_ID'):
                               letter_id = item

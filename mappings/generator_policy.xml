@@ -3,6 +3,9 @@
     <generator name="100_letter" prefix="bg" type="instance" uuid="no">
         <pattern>letter/{id}</pattern>
     </generator>
+    <generator name="100a_letter_identifier" prefix="bg" type="instance" uuid="no">
+      <pattern>letter/{id}/{identifier}</pattern>
+    </generator>
     <generator name="101_letter_index" prefix="bg" type="instance" uuid="no">
         <pattern>letter/{id}/index</pattern>
     </generator>
@@ -15,8 +18,17 @@
     <generator name="120_letter_exchange" prefix="bg" type="any">
         <pattern>letter/{id}/exchange</pattern>
     </generator>
+    <generator name="140_letter_transcription" prefix="bg" type="any">
+      <pattern>letter/{id}/transcription</pattern>
+    </generator>
+    <generator name="141_letter_transcription_activity" prefix="bg" type="any">
+      <pattern>letter/{id}/transcription_activity</pattern>
+    </generator>
     <generator name="121_letter_sender_activity" prefix="bg" type="any">
         <pattern>letter/{id}/sender_activity</pattern>
+    </generator>
+    <generator name="130_letter_contents" prefix="bg" type="instance" uuid="no">
+      <pattern>letter/{id}/content/{pos}</pattern>
     </generator>
     <generator name="200_person" prefix="bg" type="any">
         <pattern>person/{id}</pattern>
