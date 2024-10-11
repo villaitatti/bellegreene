@@ -20,6 +20,12 @@ KEYUSR = 'username'
 KEYPSW = 'password'
 KEYEND = 'endpoint'
 
+def trailing_zeros(number):
+    number_str = str(number)
+    if len(number_str) >= 5:
+        return number_str[:5]
+    else:
+        return number_str.rjust(5, '0')
 
 def _get_credentials(type):
     """
@@ -348,8 +354,34 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
                           if col.startswith('Letter_ID'):
                               letter_id = item
+                              parsed_id = re.sub(r'0{2,}', '', letter_id)
+                              
                               letter_number = ET.SubElement(row_elem, 'number')
-                              letter_number.text = letter_id.replace("0",'')
+                              letter_number.text = parsed_id
+
+                              letter_next = ET.SubElement(row_elem, 'next')
+                              letter_previous = ET.SubElement(row_elem, 'prev')
+
+                              if parsed_id == '215':
+                                letter_next.text = '00215a'
+                                letter_previous.text = '00214'
+
+                              elif parsed_id == '215a':
+                                letter_next.text = '00216'
+                                letter_previous.text = '00215'
+
+                              elif parsed_id == '216':
+                                letter_next.text = '00217'
+                                letter_previous.text = '00215a'
+                              
+                              else:
+                                if parsed_id != '604':
+                                  letter_next.text = f'{trailing_zeros(int(parsed_id)+1)}'
+
+                                if parsed_id != '1':
+                                  letter_previous.text = f'{trailing_zeros(int(parsed_id)-1)}'
+                              
+                              
 
                           if col.startswith('Location_Written_city_state'):
                               city = item
