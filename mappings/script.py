@@ -354,7 +354,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
 
                           if col.startswith('Letter_ID'):
                               letter_id = item
-                              parsed_id = re.sub(r'0{2,}', '', letter_id)
+                              parsed_id = re.sub(r'^0{2,}', '', letter_id)
                               
                               letter_number = ET.SubElement(row_elem, 'number')
                               letter_number.text = parsed_id

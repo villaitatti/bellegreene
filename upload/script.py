@@ -168,7 +168,8 @@ def _get_letters_from_raw(letter_id, raw_letter):
                 paragraphs = []
 
               # otherwise, if the paragraph is not a page, add it to the letter
-            elif not re.search(REGEX_PAGE, para[KEY_TEXT]):
+            #elif not re.search(REGEX_PAGE, para[KEY_TEXT]):
+            else:
               paragraphs.append(para)
                     
 
