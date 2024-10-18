@@ -60,4 +60,8 @@
     <generator name="400_subject" prefix="bg" type="any">
         <pattern>subject/{id}</pattern>
     </generator>
+
+    <generator name="401_subject_identifier" prefix="bg" type="any">
+      <pattern>subject/{id}/identifier</pattern>
+  </generator>
 </generator_policy>

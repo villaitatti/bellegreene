@@ -256,7 +256,7 @@ def trailing_zeros(number):
 def _create_graph(page, letter_id):
     g = Graph()
 
-    letter_id = trailing_zeros(letter_id)
+    #letter_id = trailing_zeros(letter_id)
     page_id = page[KEY_ID]
 
     LETTER_NODE = URIRef(f"{RESOURCE}letter/{letter_id}")
