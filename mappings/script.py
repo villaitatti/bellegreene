@@ -203,230 +203,222 @@ def handle_transcribers(row_elem, row):
             completed_2_elem.text = html.escape(
                 str(row['Date_Completed_YYYYMMDD1']))
 
+# Define constants for frequently used labels
+LABEL = 'label'
+IDENTIFIER = 'identifier'
+PERSON = 'person'
+CERTAIN = 'certain'
+DATE = 'date'
+START = 'start'
+END = 'end'
+TITLE = 'title'
+CONTENT = 'content'
+LOCATION = 'Location'
+NEXT = 'next'
+PREV = 'prev'
+NUMBER = 'number'
+FILE_NAME = 'file_name'
 
 def parse_letters(csv_file_path, xml_file_path, names):
-    # Read the CSV file
-    df = pd.read_csv(csv_file_path, dtype={
-                     'Box_Number': str, 'Folder_Number': str, 'Number_of_pages': str, 'Number_of_images': str}, na_filter=False)
-
-    # Replace spaces and invalid characters in column names with underscores
-    df.columns = [sanitize_column_name(col) for col in df.columns]
-
-    # Create the root element
+    """Main function to parse letters from CSV and generate XML."""
+    df = read_and_clean_csv(csv_file_path)
     root = ET.Element('root')
-
-    # Loop through the rows of the DataFrame
-    for i, row in df.iterrows():
-
-        # Create a new element for each row
+    
+    for _, row in df.iterrows():
         row_elem = ET.SubElement(root, 'letter')
-
-        unparsed_dt = None
-
-        if row['Letter_ID'] and row['Letter_ID'] != '':
-
-          # Loop through the columns
-          for col in df.columns:
-
-              if col.startswith('Name_of_Transcriber_1') or col.startswith('Transcriber_1_') or col.startswith('Date_Claimed_YYYYMMDD') or col.startswith('Date_Completed_YYYYMMDD') or col.startswith('Name_of_Transcriber_2') or col.startswith('Transcriber_2_') or col.startswith('Date_Claimed_YYYYMMDD1') or col.startswith('Date_Completed_YYYYMMDD1'):
-                  # Skip these columns as they will be handled separately
-                  continue
-
-                  # Handle list values for specific columns
-              list_values = handle_list_values(col, str(row[col]))
-              if list_values:
-                  parent_elem = ET.SubElement(row_elem, col)
-                  for item in list_values:
-                      if col == 'I_Tatti_file_names':
-                          item_elem = ET.SubElement(parent_elem, 'file_name')
-                          item_elem.text = html.escape(item)
-
-                      elif col == 'Subjects':
-                          subject_elem = ET.SubElement(
-                              parent_elem, 'subject')
-
-                          subject_label_elem = ET.SubElement(
-                              subject_elem, 'label')
-                          subject_label_elem.text = item.replace(
-                              "BG's", "BG")
-
-                          subject_id_elem = ET.SubElement(
-                              subject_elem, 'identifier')
-                          item = sanitize_column_name(item).lower()
-                          subject_id_elem.text = html.escape(item)
-
-                      elif col == 'Letters_Contents':
-                          item_elem = ET.SubElement(parent_elem, 'content')
-                          
-                          item_elem_identifier = ET.SubElement(item_elem, 'identifier')
-                          item_elem_identifier.text = f"{list_values.index(item)}"
-                          
-                          item_elem_label = ET.SubElement(item_elem, 'label')
-                          item_elem_label.text = item
+        unparsed_dt = handle_columns(df, row, row_elem, names)
+        generate_title_and_location(row_elem, row, unparsed_dt)
+        handle_transcribers(row_elem, row)
+    
+    write_pretty_xml(root, xml_file_path)
 
 
-                      elif item and item != 'nan' and col == 'Subject__People_Last_Name_First_Name':
-                          certain = True
-                          if "?" in item:
-                              certain = False
-                              item = item.replace(" (?)", "")
-                              item = item.replace("?", "")
+def read_and_clean_csv(csv_file_path):
+    """Reads the CSV and sanitizes column names."""
+    df = pd.read_csv(csv_file_path, dtype={'Box_Number': str, 'Folder_Number': str, 'Number_of_pages': str, 'Number_of_images': str}, na_filter=False)
+    df.columns = [sanitize_column_name(col) for col in df.columns]
+    return df
 
-                          item_elem = ET.SubElement(parent_elem, 'person')
-                          item_elem_identifier = ET.SubElement(
-                              item_elem, 'identifier')
 
-                          item_elem_label = ET.SubElement(item_elem, 'label')
-                          item_elem_label.text = item
+def handle_columns(df, row, row_elem, names):
+    """Handles individual columns in the DataFrame row."""
+    unparsed_dt = None
 
-                          try:
+    for col in df.columns:
+        if should_skip_column(col):
+            continue
 
-                              item_elem_identifier.text = names[item]['identifier']
-                          except Exception as ex:
-                              logging.error("An error occurred: name %s", f'{
-                                            ex} not found in letter {row['Letter_ID']}')
-                              item_elem_identifier.text = sanitize_column_name(
-                                  item)
+        list_values = handle_list_values(col, str(row[col]))
+        if list_values:
+            handle_list_column(col, list_values, row_elem, row, names)
+        else:
+            item = row[col]
+            if pd.notna(item):
+                if col.startswith('Date_YYYYMMDD'):
+                    unparsed_dt = handle_date_column(col, item, row_elem)
+                elif col.startswith(('sender', 'recipient')):
+                    handle_person_column(col, item, row_elem, names)
+                else:
+                    handle_general_column(col, item, row_elem)
+                    
+    return unparsed_dt
 
-                          item_elem_certain = ET.SubElement(
-                              item_elem, 'certain')
-                          item_elem_certain.text = str(certain)
 
-              else:
-                  item = row[col]
-                  # Create a new element for each column
-                  if not pd.isna(item):
-                      # Handle dates
-                      if col.startswith('Date_YYYYMMDD'):
-                          letter_date = item
-                          dt = parse_dates(item)
+def should_skip_column(col):
+    """Check if the column should be skipped based on naming."""
+    skip_patterns = ['Name_of_Transcriber_1', 'Transcriber_1_', 'Date_Claimed_YYYYMMDD', 'Date_Completed_YYYYMMDD',
+                     'Name_of_Transcriber_2', 'Transcriber_2_', 'Date_Claimed_YYYYMMDD1', 'Date_Completed_YYYYMMDD1']
+    return any(col.startswith(pattern) for pattern in skip_patterns)
 
-                          date_tag = ET.SubElement(row_elem, 'date')
 
-                          old_date_tag = ET.SubElement(date_tag, col)
-                          old_date_tag.text = item
+def handle_list_column(col, list_values, row_elem, row, names):
+    """Handles columns that contain list values."""
+    parent_elem = ET.SubElement(row_elem, col)
+    for item in list_values:
+        if col == 'I_Tatti_file_names':
+            create_text_element(parent_elem, FILE_NAME, html.escape(item))
+        elif col == 'Subjects':
+            create_subject_element(parent_elem, item)
+        elif col == 'Letters_Contents':
+            create_letter_content_element(parent_elem, item, list_values.index(item))
+        elif col == 'Subject__People_Last_Name_First_Name':
+            create_person_element(parent_elem, item, names, row)
 
-                          start_tag = ET.SubElement(date_tag, 'start')
-                          start_tag.text = dt[0]
-                          unparsed_dt = dt[0]
 
-                          try:
-                            formatted_date = datetime.strptime(
-                                dt[0], '%Y-%m-%d').strftime('%d %B %Y')
-                            formatted_date_tag = ET.SubElement(date_tag, 'formatted')
-                            formatted_date_tag.text = formatted_date
-                          except Exception as ex:
-                            logging.error("An error occurred: date %s", f'{
-                                          ex} not found in letter {row['Letter_ID']}')
+def create_subject_element(parent_elem, item):
+    """Creates subject element for XML."""
+    subject_elem = ET.SubElement(parent_elem, 'subject')
+    create_text_element(subject_elem, LABEL, item.replace("BG's", "BG"))
+    create_text_element(subject_elem, IDENTIFIER, sanitize_column_name(item).lower())
 
-                          end_tag = ET.SubElement(date_tag, 'end')
-                          end_tag.text = dt[1]
-                      if col.startswith('sender') or col.startswith('recipient'):
 
-                          person_elem = ET.SubElement(row_elem, col)
-                          person_elem_identifier = ET.SubElement(
-                              person_elem, 'identifier')
+def create_letter_content_element(parent_elem, item, index):
+    """Creates letter content element."""
+    content_elem = ET.SubElement(parent_elem, CONTENT)
+    create_text_element(content_elem, IDENTIFIER, str(index))
+    create_text_element(content_elem, LABEL, item)
 
-                          try:
-                              person_elem_identifier.text = names[item]['identifier']
-                          except Exception as ex:
-                              logging.error("An error occurred: name %s", f'{
-                                            ex} not found in letter {row['Letter_ID']}')
-                              person_elem_identifier.text = item
 
-                              # Set the identifier to 00000 for Belle da Costa Greene
-                              if 'Greene, Belle da Costa' in item:
-                                  person_elem_identifier.text = '00000'
+def create_person_element(parent_elem, item, names, row):
+    """Creates person element."""
+    certain = "?" not in item
+    item = item.replace(" (?)", "").replace("?", "")
+    
+    person_elem = ET.SubElement(parent_elem, PERSON)
+    create_text_element(person_elem, LABEL, item)
 
-                          person_name_elem = ET.SubElement(
-                              person_elem, 'name')
-                          person_name_elem.text = item
+    try:
+        create_text_element(person_elem, IDENTIFIER, names[item][IDENTIFIER])
+    except KeyError:
+        logging.error("Name %s not found in letter %s", item, row['Letter_ID'])
+        create_text_element(person_elem, IDENTIFIER, sanitize_column_name(item))
+    
+    create_text_element(person_elem, CERTAIN, str(certain))
 
-                          if col.startswith('sender'):
-                              letter_sender = item
-                          if col.startswith('recipient'):
-                              letter_recipient = item
 
-                      else:
-                          col_elem = ET.SubElement(row_elem, col)
-                          # Escape special characters in the text content
-                          col_elem.text = str(item)
+def handle_date_column(col, item, row_elem):
+    """Handles date-related columns."""
+    dt = parse_dates(item)
+    date_tag = ET.SubElement(row_elem, DATE)
+    
+    create_text_element(date_tag, col, item)
+    create_text_element(date_tag, START, dt[0])
+    create_text_element(date_tag, END, dt[1])
+    
+    try:
+        formatted_date = datetime.strptime(dt[0], '%Y-%m-%d').strftime('%d %B %Y')
+        create_text_element(date_tag, 'formatted', formatted_date)
+    except ValueError:
+        logging.error("Invalid date format for letter.")
+    
+    return dt[0]
 
-                          if col.startswith('Letter_ID'):
-                              letter_id = item
-                              parsed_id = re.sub(r'^0{2,}', '', letter_id)
-                              
-                              letter_number = ET.SubElement(row_elem, 'number')
-                              letter_number.text = parsed_id
 
-                              letter_next = ET.SubElement(row_elem, 'next')
-                              letter_previous = ET.SubElement(row_elem, 'prev')
+def handle_person_column(col, item, row_elem, names):
+    """Handles sender and recipient columns."""
+    person_elem = ET.SubElement(row_elem, col)
+    identifier_elem = create_text_element(person_elem, IDENTIFIER, get_person_identifier(item, names))
+    create_text_element(person_elem, 'name', item)
 
-                              if parsed_id == '215':
-                                letter_next.text = '00215a'
-                                letter_previous.text = '00214'
 
-                              elif parsed_id == '215a':
-                                letter_next.text = '00216'
-                                letter_previous.text = '00215'
+def get_person_identifier(item, names):
+    """Returns the person's identifier, handles special cases."""
+    if item == 'Greene, Belle da Costa':
+        return '00000'
+    try:
+        return names[item][IDENTIFIER]
+    except KeyError:
+        logging.error("Name %s not found", item)
+        return item
 
-                              elif parsed_id == '216':
-                                letter_next.text = '00217'
-                                letter_previous.text = '00215a'
-                              
-                              else:
-                                if parsed_id != '604':
-                                  letter_next.text = f'{trailing_zeros(int(parsed_id)+1)}'
 
-                                if parsed_id != '1':
-                                  letter_previous.text = f'{trailing_zeros(int(parsed_id)-1)}'
-                              
-                              
+def handle_general_column(col, item, row_elem):
+    """Handles general non-list, non-person, non-date columns."""
+    col_elem = ET.SubElement(row_elem, col)
+    col_elem.text = str(item)
 
-                          if col.startswith('Location_Written_city_state'):
-                              city = item
+    if col.startswith('Letter_ID'):
+        handle_letter_id(col_elem, item, row_elem)
 
-                          if col.startswith('Location_Written_country'):
-                              country = item
 
-          try:
-              # Parse the date and format
-              parsed_dt = datetime.strptime(
-                  unparsed_dt, '%Y-%m-%d').strftime('%d %b %Y')
+def handle_letter_id(col_elem, letter_id, row_elem):
+    """Handles Letter_ID column."""
+    parsed_id = re.sub(r'^0{2,}', '', letter_id)
+    create_text_element(row_elem, NUMBER, parsed_id)
+    add_letter_navigation(row_elem, parsed_id)
 
-              label_elem = ET.SubElement(row_elem, 'title')
-              label_elem.text = f'{parsed_dt}; {
-                  letter_sender} to {letter_recipient}'
-          except Exception as ex:
-              logging.error("An error occurred: date %s", f'{
-                            ex} not found in letter {letter_id}')
-              label_elem = ET.SubElement(row_elem, 'title')
-              label_elem.text = f'{unparsed_dt}; {
-                  letter_sender} to {letter_recipient}'
 
-          if city and country:
-              location_elem = ET.SubElement(row_elem, 'Location')
+def add_letter_navigation(row_elem, parsed_id):
+    """Adds next and previous letter navigation."""
+    letter_next = create_text_element(row_elem, NEXT, None)
+    letter_prev = create_text_element(row_elem, PREV, None)
 
-              location_label = ET.SubElement(location_elem, 'label')
-              location_label.text = f'{city}, {country}'
+    if parsed_id == '215':
+        letter_next.text, letter_prev.text = '00215a', '00214'
+    elif parsed_id == '215a':
+        letter_next.text, letter_prev.text = '00216', '00215'
+    elif parsed_id == '216':
+        letter_next.text, letter_prev.text = '00217', '00215a'
+    else:
+        if parsed_id != '604':
+            letter_next.text = f'{trailing_zeros(int(parsed_id) + 1)}'
+        if parsed_id != '1':
+            letter_prev.text = f'{trailing_zeros(int(parsed_id) - 1)}'
 
-              location_id = ET.SubElement(location_elem, 'identifier')
-              location_id.text = sanitize_column_name(f'{city} {country}')
 
-            # Handle transcribers
-          handle_transcribers(row_elem, row)
+def generate_title_and_location(row_elem, row, unparsed_dt):
+    """Generates title and location tags."""
+    try:
+        parsed_dt = datetime.strptime(unparsed_dt, '%Y-%m-%d').strftime('%d %b %Y')
+        title = f'{parsed_dt}; {row.get("sender")} to {row.get("recipient")}'
+    except ValueError:
+        title = f'{unparsed_dt}; {row.get("sender")} to {row.get("recipient")}'
+    
+    create_text_element(row_elem, TITLE, title)
 
-    # Convert the ElementTree to a string
+    if row.get('Location_Written_city_state') and row.get('Location_Written_country'):
+        location_label = f'{row["Location_Written_city_state"]}, {row["Location_Written_country"]}'
+        location_elem = ET.SubElement(row_elem, LOCATION)
+        create_text_element(location_elem, LABEL, location_label)
+        create_text_element(location_elem, IDENTIFIER, sanitize_column_name(location_label))
+
+
+def create_text_element(parent_elem, tag, text):
+    """Helper function to create an XML element with text."""
+    elem = ET.SubElement(parent_elem, tag)
+    if text:
+        elem.text = text
+    return elem
+
+
+def write_pretty_xml(root, xml_file_path):
+    """Converts XML to a pretty string and writes to a file."""
     xml_str = ET.tostring(root, encoding='utf-8', method='xml')
-
-    # Beautify the XML string
     dom = minidom.parseString(xml_str)
     pretty_xml_str = dom.toprettyxml(indent="  ")
 
-    # Write the pretty XML string to the file
     with open(xml_file_path, 'w', encoding='utf-8') as f:
         f.write(pretty_xml_str)
-
 
 def parse_names(csv_file_path, xml_file_path):
 

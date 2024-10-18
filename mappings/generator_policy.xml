@@ -63,5 +63,9 @@
 
     <generator name="401_subject_identifier" prefix="bg" type="any">
       <pattern>subject/{id}/identifier</pattern>
-  </generator>
+    </generator>
+
+    <generator name="wikidata" prefix="wikidata" type="any">
+      <pattern>{image_url}</pattern>
+    </generator>
 </generator_policy>
