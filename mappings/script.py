@@ -6,9 +6,11 @@ import json
 import click
 import rdflib
 import logging
+import requests
 import configparser
 import pandas as pd
 import xml.etree.ElementTree as ET
+from urllib.parse import quote
 from xml.dom import minidom
 from datetime import datetime, timedelta
 from defusedxml.minidom import parseString
@@ -539,13 +541,50 @@ def count_entities_in_ttl(ttl_file, t):
         return int(row[0])
 
 
+def download_images(names, output_path):
+    # Create the images directory if it does not exist
+    images_dir = os.path.join(output_path, 'images')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
+    for _, data in names.items():
+      if 'image' in data and data['image']:
+        # encode data['image'] URL
+        filename = data['image']
+        url = "https://commons.wikimedia.org/w/api.php"
+        params = {
+            "action": "query",
+            "format": "json",
+            "prop": "imageinfo",
+            "iiprop": "url",
+            "titles": f"File:{quote(filename)}"
+        }
+        
+        response = requests.get(url, params=params)
+        data = response.json()
+        
+        # Extract the image URL from the response
+        pages = data["query"]["pages"]
+        for page in pages.values():
+            if "imageinfo" in page:
+                image_url = page["imageinfo"][0]["url"]
+                # Download and save the image
+                img_data = requests.get(image_url).content
+                with open(os.path.join(images_dir, filename), 'wb') as handler:
+                    handler.write(img_data)
+                print(f"Downloaded {filename}")
+            else:
+                print(f"Failed to find image for {filename}")
+  
+
 @click.command()
 @click.option('-p', 'parse', is_flag=True, help="Execute the parsing", default=False)
 @click.option('-m', 'mappings', is_flag=True, help="Execute the mappings", default=False)
 @click.option('-u', 'upload', is_flag=True, help="Execute the uploading", default=False)
+@click.option('-d', 'download_images', is_flag=True, help="Download images", default=False)
 @click.option('-l', 'limit', help="Subset of letters to iterate", type=int, default=-1)
 @click.option('-c', 'upload_config', type=str, help="profile to select usr, psw, and endpoint from psw.ini. see readme", default='belle_greene')
-def exec(parse, mappings, upload, limit, upload_config):
+def exec(parse, mappings, upload, limit, upload_config, download_images=False):
 
     cur_path = os.path.dirname(os.path.realpath(__file__))
     output_path = os.path.join(cur_path, "output")
@@ -563,6 +602,10 @@ def exec(parse, mappings, upload, limit, upload_config):
 
         # Parse names
         names = parse_names(input_names, output_names)
+
+        # Download images
+        if download_images:
+            download_images(names, output_path)
 
         # Write letters
         parse_letters(input_letters, output_letters, names)
@@ -624,7 +667,6 @@ def exec(parse, mappings, upload, limit, upload_config):
         print(f'Number of names in TTL file: {ttl_names}\n')
         
         print('Check completed\n')
-        
 
     if upload:
 
