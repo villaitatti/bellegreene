@@ -411,6 +411,44 @@
             <link>
               <path>
                   <source_relation>
+                      <relation>citation</relation>
+                  </source_relation>
+                  <target_relation>
+                      <if>
+                          <exists>text()</exists>
+                      </if>
+                      <relationship>crm:P1_is_identified_by</relationship>
+
+                  </target_relation>
+              </path>
+              <range>
+                  <source_node>citation</source_node>
+                  <target_node>
+                      <entity>
+                          <type>crm:E41_Appellation</type>
+                          <instance_generator name="150_letter_citation">
+                              <arg name="id" type="xpath">../Letter_ID/text()</arg>
+                          </instance_generator>
+                          <label_generator name="Literal">
+                              <arg name="text" type="xpath">text()</arg>
+                          </label_generator>
+                          <additional>
+                            <relationship>crm:P2_has_type</relationship>
+                            <entity>
+                                <type>crm:E55_Type</type>
+                                <instance_generator name="000_type">
+                                    <arg name="type" type="constant">citation</arg>
+                                </instance_generator>
+                            </entity>
+                          </additional>
+                      </entity>
+                  </target_node>
+              </range>
+            </link> 
+
+            <link>
+              <path>
+                  <source_relation>
                       <relation>transcribers/transcriber</relation>
                   </source_relation>
                   <target_relation>

@@ -20,12 +20,38 @@ KEYUSR = 'username'
 KEYPSW = 'password'
 KEYEND = 'endpoint'
 
+# Define constants for frequently used labels
+LABEL = 'label'
+IDENTIFIER = 'identifier'
+PERSON = 'person'
+CERTAIN = 'certain'
+DATE = 'date'
+START = 'start'
+END = 'end'
+TITLE = 'title'
+CONTENT = 'content'
+LOCATION = 'Location'
+NEXT = 'next'
+PREV = 'prev'
+NUMBER = 'number'
+FILE_NAME = 'file_name'
+
+# Configure logging
+logging.basicConfig(
+    filename='mappings/output/error.log',
+    filemode='w',
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+
 def trailing_zeros(number):
     number_str = str(number)
     if len(number_str) >= 5:
         return number_str[:5]
     else:
         return number_str.rjust(5, '0')
+
 
 def _get_credentials(type):
     """
@@ -51,16 +77,7 @@ def _get_credentials(type):
 
     except Exception as ex:
         print('Error. Have you created the psw.ini file? see readme.md')
-
-
-# Configure logging
-logging.basicConfig(
-    filename='mappings/output/error.log',
-    filemode='w',
-    level=logging.ERROR,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-
+        
 
 def clean_date_string(date_str):
     """Removes annotations and uncertainty markers from the date string."""
@@ -203,21 +220,18 @@ def handle_transcribers(row_elem, row):
             completed_2_elem.text = html.escape(
                 str(row['Date_Completed_YYYYMMDD1']))
 
-# Define constants for frequently used labels
-LABEL = 'label'
-IDENTIFIER = 'identifier'
-PERSON = 'person'
-CERTAIN = 'certain'
-DATE = 'date'
-START = 'start'
-END = 'end'
-TITLE = 'title'
-CONTENT = 'content'
-LOCATION = 'Location'
-NEXT = 'next'
-PREV = 'prev'
-NUMBER = 'number'
-FILE_NAME = 'file_name'
+
+def handle_citation(row_elem, row):
+    
+    citation = f'Bernard and Mary Berenson Papers, {row['sender']}, '
+    
+    y = row_elem.find('date').find('year')
+    
+    if y:
+        citation += f'{y.text}, '
+  
+    citation += f'Box {row["Box_Number"]}, Folder {row["Folder_Number"]}, Belle da Costa Greene Correspondence, Biblioteca Berenson, I Tatti, The Harvard University Center for Renaissance Studies.'
+    create_text_element(row_elem, 'citation', citation)
 
 def parse_letters(csv_file_path, xml_file_path, names):
     """Main function to parse letters from CSV and generate XML."""
@@ -229,6 +243,7 @@ def parse_letters(csv_file_path, xml_file_path, names):
         unparsed_dt = handle_columns(df, row, row_elem, names)
         generate_title_and_location(row_elem, row, unparsed_dt)
         handle_transcribers(row_elem, row)
+        handle_citation(row_elem, row)
     
     write_pretty_xml(root, xml_file_path)
 
@@ -326,8 +341,9 @@ def handle_date_column(col, item, row_elem):
     create_text_element(date_tag, END, dt[1])
     
     try:
-        formatted_date = datetime.strptime(dt[0], '%Y-%m-%d').strftime('%d %B %Y')
-        create_text_element(date_tag, 'formatted', formatted_date)
+        formatted_date = datetime.strptime(dt[0], '%Y-%m-%d')
+        create_text_element(date_tag, 'formatted', formatted_date.strftime('%d %B %Y'))
+        create_text_element(date_tag, 'year', str(formatted_date.year))
     except ValueError:
         logging.error("Invalid date format for letter.")
     
@@ -420,6 +436,7 @@ def write_pretty_xml(root, xml_file_path):
     with open(xml_file_path, 'w', encoding='utf-8') as f:
         f.write(pretty_xml_str)
 
+
 def parse_names(csv_file_path, xml_file_path):
 
     NAME_LAST_FIRST = 'Name (Last, First)'
@@ -458,6 +475,9 @@ def parse_names(csv_file_path, xml_file_path):
         bio_desc = ET.SubElement(person, 'biographical_description')
         bio_desc.text = row['Biographical Description']
 
+        image = ET.SubElement(person, 'image_name')
+        image.text = row['image']
+
         root.append(person)
 
     # Convert XML tree to a string
@@ -473,16 +493,12 @@ def parse_names(csv_file_path, xml_file_path):
 
     return df.set_index(NAME_LAST_FIRST).T.to_dict()
 
-# Function to count the number of <Letter> elements in the XML file
-
 
 def count_elements_in_xml(xml_file, xpath):
     tree = ET.parse(xml_file)
     root = tree.getroot()
     letters = root.findall(xpath)  # Finds all <Letter> tags
     return len(letters)
-
-# Function to count the number of rows in the CSV file
 
 
 def count_rows_in_csv(csv_file, required_columns):

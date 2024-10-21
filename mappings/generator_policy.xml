@@ -24,6 +24,9 @@
     <generator name="141_letter_transcription_activity" prefix="bg" type="any">
       <pattern>letter/{id}/transcription_activity</pattern>
     </generator>
+    <generator name="150_letter_citation" prefix="bg" type="instance" uuid="no">
+      <pattern>letter/{id}/citation</pattern>
+    </generator>
     <generator name="121_letter_sender_activity" prefix="bg" type="any">
         <pattern>letter/{id}/sender_activity</pattern>
     </generator>
@@ -41,6 +44,9 @@
     </generator>
     <generator name="204_person_nickname" prefix="bg" type="any">
         <pattern>person/{id}/nickname</pattern>
+    </generator>
+    <generator name="205_person_identifier" prefix="bg" type="any">
+      <pattern>person/{id}/identifier</pattern>
     </generator>
     <generator name="000_type" prefix="bg" type="any">
         <pattern>type/{type}</pattern>
