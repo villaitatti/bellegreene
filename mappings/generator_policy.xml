@@ -27,6 +27,9 @@
     <generator name="150_letter_citation" prefix="bg" type="instance" uuid="no">
       <pattern>letter/{id}/citation</pattern>
     </generator>
+    <generator name="160_letter_pages" prefix="bg" type="instance" uuid="no">
+      <pattern>letter/{id}/pages</pattern>
+    </generator>
     <generator name="121_letter_sender_activity" prefix="bg" type="any">
         <pattern>letter/{id}/sender_activity</pattern>
     </generator>
