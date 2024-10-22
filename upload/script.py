@@ -206,7 +206,7 @@ def _write_html(page, path, name):
         with open(os.path.join(path, name), "w") as f:
             f.write("<html>\n")
             f.write("<body>\n")
-            for para in page[KEY_PARAGRAPHS]:
+            for i, para in enumerate(page[KEY_PARAGRAPHS]):
                 f.write("<p>")
                 for run in para[KEY_RUNS]:
                     if run[KEY_TYPE] == KEY_BOLD:
@@ -217,8 +217,10 @@ def _write_html(page, path, name):
                         f.write(f" <u>{run[KEY_VALUE]}</u> ")
                     elif run[KEY_TYPE] == KEY_STRIKE:
                         f.write(f" <s>{run[KEY_VALUE]}</s> ")
+                    elif run[KEY_VALUE] == 'th':
+                        f.write(f"{run[KEY_VALUE]} ")
                     else:
-                        f.write(run[KEY_VALUE])
+                        f.write(f"{run[KEY_VALUE]}")
                 f.write("</p>\n")
             f.write("</body>\n")
             f.write("</html>\n")
@@ -401,7 +403,7 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
         # get letter from raw paragraphs
         letter = _get_letters_from_raw(letter_id, letter_para)
 
-        for id, page in enumerate(letter[KEY_PAGES]):
+        for _, page in enumerate(letter[KEY_PAGES]):
 
             _write_txt(page, os.path.join(output_path, "txt"),
                        f'{letter[KEY_ID]}_{page[KEY_ID]}.txt')
