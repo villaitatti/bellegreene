@@ -156,7 +156,7 @@ def parse_dates(date_str):
 
 def sanitize_column_name(name):
     # Replace spaces and other invalid characters with underscores
-    name = name.replace(' ', '_')
+    name = re.sub(r'\s+', '_', name)
     # Remove any characters that are not allowed in XML tags
     name = re.sub(r'\W', '', name)
     return name
