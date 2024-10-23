@@ -328,7 +328,7 @@ def create_person_element(parent_elem, item, names, row):
         create_text_element(person_elem, IDENTIFIER, names[item][IDENTIFIER])
     except KeyError:
         logging.error("Name %s not found in letter %s", item, row['Letter_ID'])
-        create_text_element(person_elem, IDENTIFIER, sanitize_column_name(item))
+        #create_text_element(person_elem, IDENTIFIER, sanitize_column_name(item))
     
     create_text_element(person_elem, CERTAIN, str(certain))
 
@@ -367,7 +367,7 @@ def get_person_identifier(item, names):
         return names[item][IDENTIFIER]
     except KeyError:
         logging.error("Name %s not found", item)
-        return item
+        return ""
 
 
 def handle_general_column(col, item, row_elem):
@@ -423,8 +423,8 @@ def generate_title_and_location(row_elem, row, unparsed_dt):
 
 def create_text_element(parent_elem, tag, text):
     """Helper function to create an XML element with text."""
-    elem = ET.SubElement(parent_elem, tag)
-    if text:
+    if text is not None or text != '':
+        elem = ET.SubElement(parent_elem, tag)
         elem.text = text
     return elem
 
@@ -694,8 +694,7 @@ def exec(parse, mappings, upload, limit, upload_config, download_images=False):
 
         print('Updating names ...')
         data = os.path.join(output_path, 'output_names.ttl')
-        execute_update(
-            data, credentials, graph='https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fnames%2Fcontext')
+        execute_update(data, credentials, graph='https%3A%2F%2Fbellegreene.itatti.harvard.edu%2Fresource%2Fnames%2Fcontext')
         print('Completed\n')
 
 
