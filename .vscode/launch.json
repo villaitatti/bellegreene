@@ -13,27 +13,44 @@
       "args": ["-p", "-m", "-u"]
     },
     {
-      "name": "Upload - 50",
+      "name": "Upload - ALL",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/upload/script.py",
       "console": "integratedTerminal",
       "args": [
         "-P",
-        "-l",
-        "50",
         "-direct",
         "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file",
         "-u"
       ]
     },
     {
-      "name": "TEST - 500",
+      "name": "Upload - generate",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/upload/script.py",
       "console": "integratedTerminal",
-      "args": ["-P", "-l", "500"]
+      "args": [
+        "-P",
+        "-direct",
+        "/Users/gspinaci/projects/bellegreene/apps/BelleGreene_app/file",
+      ]
+    },
+    {
+      "name": "TEST - ALL",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/upload/script.py",
+      "console": "integratedTerminal",
+      "args": ["-P"]
+    },
+    {
+      "name": "Check images",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/image_checker.py",
+      "console": "integratedTerminal"
     }
   ]
 }
