@@ -106,7 +106,7 @@ def _extract_paragraph(para):
 
 
 def _extract_run(run):
-    run_text = run.text.strip()
+    run_text = run.text
     run_type = _get_run_type(run)
     return {KEY_VALUE: run_text, KEY_TYPE: run_type}
 
@@ -206,19 +206,17 @@ def _write_html(page, path, name):
         with open(os.path.join(path, name), "w") as f:
             f.write("<html>\n")
             f.write("<body>\n")
-            for i, para in enumerate(page[KEY_PARAGRAPHS]):
+            for _, para in enumerate(page[KEY_PARAGRAPHS]):
                 f.write("<p>")
                 for run in para[KEY_RUNS]:
                     if run[KEY_TYPE] == KEY_BOLD:
-                        f.write(f" <b>{run[KEY_VALUE]}</b> ")
+                        f.write(f"<b>{run[KEY_VALUE]}</b>")
                     elif run[KEY_TYPE] == KEY_ITALIC:
-                        f.write(f" <i>{run[KEY_VALUE]}</i> ")
+                        f.write(f"<i>{run[KEY_VALUE]}</i>")
                     elif run[KEY_TYPE] == KEY_UNDERLINE:
-                        f.write(f" <u>{run[KEY_VALUE]}</u> ")
+                        f.write(f"<u>{run[KEY_VALUE]}</u>")
                     elif run[KEY_TYPE] == KEY_STRIKE:
-                        f.write(f" <s>{run[KEY_VALUE]}</s> ")
-                    elif run[KEY_VALUE] == 'th':
-                        f.write(f"{run[KEY_VALUE]} ")
+                        f.write(f"<s>{run[KEY_VALUE]}</s>")
                     else:
                         f.write(f"{run[KEY_VALUE]}")
                 f.write("</p>\n")
