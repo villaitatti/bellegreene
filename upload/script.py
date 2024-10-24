@@ -410,30 +410,32 @@ def exec(exec_upload, prune, direct_path, limit, upload_config):
   # iterate over letter names
   for i, document in enumerate(letters_name):
 
-    letter_id = '0' + document.replace('.docx', '').replace('BG_BB_', '')
+    if '.docx' in document and 'lock' not in document:
 
-    # parse docx and extract paragraphs
-    letter_para = _extract_paragraphs_from_docx(
-        os.path.join(input_path, document))
+      letter_id = '0' + document.replace('.docx', '').replace('BG_BB_', '')
 
-    # get letter from raw paragraphs
-    letter = _get_letters_from_raw(letter_id, letter_para)
+      # parse docx and extract paragraphs
+      letter_para = _extract_paragraphs_from_docx(
+          os.path.join(input_path, document))
 
-    for _, page in enumerate(letter[KEY_PAGES]):
+      # get letter from raw paragraphs
+      letter = _get_letters_from_raw(letter_id, letter_para)
 
-      _write_txt(page, os.path.join(output_path, "txt"),
-                 f'{letter[KEY_ID]}_{page[KEY_ID]}.txt')
-      _write_html(page, os.path.join(output_path, "html"),
-                  f'{letter[KEY_ID]}_{page[KEY_ID]}.html')
-      if direct_path:
-        _write_html(page, direct_path, f'{
-                    letter[KEY_ID]}_{page[KEY_ID]}.html')
+      for _, page in enumerate(letter[KEY_PAGES]):
 
-    parsed_letters.append(letter)
+        _write_txt(page, os.path.join(output_path, "txt"),
+                  f'{letter[KEY_ID]}_{page[KEY_ID]}.txt')
+        _write_html(page, os.path.join(output_path, "html"),
+                    f'{letter[KEY_ID]}_{page[KEY_ID]}.html')
+        if direct_path:
+          _write_html(page, direct_path, f'{
+                      letter[KEY_ID]}_{page[KEY_ID]}.html')
 
-    # break if limit is reached
-    if limit > 0 and i >= limit:
-      break
+      parsed_letters.append(letter)
+
+      # break if limit is reached
+      if limit > 0 and i >= limit:
+        break
 
   # execute pandas
   letters_df = pd.read_csv(os.path.join(
