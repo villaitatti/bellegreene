@@ -38,6 +38,9 @@ PREV = 'prev'
 NUMBER = 'number'
 FILE_NAME = 'file_name'
 
+PSP_NAME = 'Palmer, Philip'
+DRF_NAME = 'Foner, Daria'
+
 # Configure logging
 logging.basicConfig(
     filename='mappings/output/error.log',
@@ -176,13 +179,22 @@ def handle_list_values(col_name, value):
 
 
 def handle_transcribers(row_elem, row):
+
+    def transcriber_name(name):
+        if name == 'Palmer' or name == 'Palmer. Philip':
+          name = PSP_NAME
+        if name == 'Daria Rose Foner' or name == 'Foner, Daria Rose':
+          name = DRF_NAME
+          
+        return html.escape(name)
+  
     transcribers_elem = ET.SubElement(row_elem, 'transcribers')
 
     # Handle transcriber 1
     if not pd.isna(row['Name_of_Transcriber_1_Last_Name_First_Name']):
         transcriber_1_elem = ET.SubElement(transcribers_elem, 'transcriber')
         name_1_elem = ET.SubElement(transcriber_1_elem, 'name')
-        name_1_elem.text = html.escape(
+        name_1_elem.text = transcriber_name(
             str(row['Name_of_Transcriber_1_Last_Name_First_Name']))
 
         if not pd.isna(row['Transcriber_1_Initials']):
@@ -204,7 +216,7 @@ def handle_transcribers(row_elem, row):
     if not pd.isna(row['Name_of_Transcriber_2_Last_Name_First_Name']):
         transcriber_2_elem = ET.SubElement(transcribers_elem, 'transcriber')
         name_2_elem = ET.SubElement(transcriber_2_elem, 'name')
-        name_2_elem.text = html.escape(
+        name_2_elem.text = transcriber_name(
             str(row['Name_of_Transcriber_2_Last_Name_First_Name']))
 
         if not pd.isna(row['Transcriber_2_Initials']):
